@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <funcoes.h>
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -29,7 +29,7 @@ void cadastrar_pedido() {
 
 int main(void) {
     int op;
-
+    
     do {
         printf("=== VENDA CERTA ===\n\n");
         printf("1. Cadastrar Produto\n");
