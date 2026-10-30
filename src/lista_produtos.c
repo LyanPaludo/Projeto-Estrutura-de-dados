@@ -3,16 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-// FUNÇÃO PARA IMPRIMIR PRODUTO, COM CORZINHA
-// https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-// cores e reset
-#define RESET "\x1b[0m"
-#define RED "\x1b[31m"
-#define GREEN "\x1b[32m"
-#define WHITE "\x1b[37m"
-//formatação de texto
-#define BOLD "\x1b[1m"
-#define ULINED "\x1b[4m"
+#include <string.h>
 
 //GERAR PRÓXIMO CÓDIGO
 static uint64_t gerar_prox_cod(void) {
@@ -33,20 +24,17 @@ void inserir_produto(Controle *control, Produto *produto){
 }
 
 Produto *cad_prod_sys(char *nome, int qtd, int volume, Controle *control){
-    Produto *produto = pesquisa_por_nome(nome, control);
+    Produto *produto = (Produto *) malloc(sizeof(Produto));
     if (produto == NULL){
-        produto = (Produto *) malloc(sizeof(Produto));
-        if (produto == NULL){
-            return NULL;
-        }
-        produto->nome   = nome;
-        produto->qtd    = qtd;
-        produto->volume = volume;
-        produto->codigo = gerar_prox_cod();
-        inserir_produto(control, produto);
-    }else{
-        aumentar_quantidade(produto, qtd);
+        return NULL;
     }
+    char *name = (char *) malloc(strlen(nome)*sizeof(char));
+    strcpy(name, nome);
+    produto->nome   = name;
+    produto->qtd    = qtd;
+    produto->volume = volume;
+    produto->codigo = gerar_prox_cod();
+    inserir_produto(control, produto);
     return produto;
 }
 
@@ -54,7 +42,6 @@ Produto *cad_prod_sys(char *nome, int qtd, int volume, Controle *control){
 Controle *criar_lista(void){
     Controle *control  = (Controle *) malloc(sizeof(Controle));
     if (control == NULL){
-        printf(RED BOLD "\nERRO NA ALOCAÇÃO DA LISTA!\n" RESET);
         return NULL;
     }
     control->prod_total = 0;

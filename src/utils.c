@@ -6,11 +6,11 @@ void limpar_buffer(void) {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void limpar_tela() {
+void limpar_tela(void) {
     printf("\033[H\033[2J");
 }
 
-void pausar() {
+void pausar(void) {
     printf("\nPressione [Enter] para continuar...");
     getchar();
     limpar_tela();

@@ -16,8 +16,6 @@ typedef struct Controle{
     Produto *ultimo;
 }Controle;
 
-static uint64_t gerar_prox_cod(void);
-
 //INSERT
 Produto *cad_prod_sys(char *nome, int qtd, int volume, Controle *control); //Função para cadastrar produto em uma lista de produtos
 void inserir_produto(Controle *control, Produto *produto);//inserir produto
