@@ -15,7 +15,7 @@
 int main(){
     setlocale(LC_ALL, "");
     int op = -1;
-    Controle *control = criar_lista();
+    ListaProdutos *control = criar_lista_produto();
     if (control == NULL){
         return EXIT_FAILURE;
     }
@@ -27,8 +27,14 @@ int main(){
         printf("0. Encerrar\n\n");
 
         printf("Informe sua opcao: ");
-        if (scanf("%d", &op)!=1){
-            printf("\nValor Inválido\n");
+        int res = scanf("%d", &op);
+
+        if (res != 1) {
+            if (res == EOF) {
+                printf("\nFim de arquivo atingido (EOF). Encerrando...\n");
+                break;
+            }
+            printf("\nValor Invalido\n");
             limpar_buffer();
             pausar();
             continue;

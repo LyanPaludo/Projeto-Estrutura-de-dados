@@ -3,7 +3,7 @@
 #include "lista_produtos.h"
 
 void imprimir_produto(Produto *produto); //Função para imprimir um único produto
-void imprimir_lista(Controle *control); //Função para imprimir toda uma lista
+void imprimir_lista(ListaProdutos *control); //Função para imprimir toda uma lista
 
 
 #endif

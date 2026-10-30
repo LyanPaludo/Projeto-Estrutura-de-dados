@@ -2,7 +2,7 @@
 #define INTERFACE_H
 #include "lista_produtos.h"
 
-void cadastrar_produto(Controle *control);
+void cadastrar_produto(ListaProdutos *control);
 
 
 #endif

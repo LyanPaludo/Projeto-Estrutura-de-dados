@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <stdio.h>
+#include <string.h>
 
 void limpar_buffer(void) {
     int c;
@@ -34,3 +35,14 @@ int comparar_sem_case(const char *s1, const char *s2) {
     }    
     return (unsigned char)minusculizar(*s1) - (unsigned char)minusculizar(*s2);
 }
+
+void ler_string(char *dest, int tamanho){
+    if (fgets(dest, tamanho, stdin) != NULL){
+        size_t len = strlen(dest);
+        if (len > 0 && dest[len-1] == '\n'){
+            dest[len-1] = '\0';
+        }else{
+            limpar_buffer();
+        }
+    }
+}//Função para ler string limitada e limpar excedentes;
