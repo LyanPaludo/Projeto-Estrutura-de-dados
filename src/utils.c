@@ -36,6 +36,19 @@ int comparar_sem_case(const char *s1, const char *s2) {
     return (unsigned char)minusculizar(*s1) - (unsigned char)minusculizar(*s2);
 }
 
+bool apenas_espacos(const char *str){
+    if (str[0] == '\0'){
+        return false;
+    }
+    while (*str){
+        if (*str != ' '){
+            return false;
+        }
+        str++;
+    }
+    return true;
+}
+
 bool ler_string(char *dest, int tamanho){
     if (fgets(dest, tamanho, stdin) != NULL){
         size_t len = strlen(dest);

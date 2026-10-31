@@ -1,5 +1,4 @@
 #include "display.h"
-#include "utils.h"
 #include "cores.h"
 #include <stdio.h>
 #include <inttypes.h>

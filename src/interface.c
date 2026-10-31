@@ -14,9 +14,18 @@ void cadastrar_produto(ListaProdutos *control){
     int res;
     while (1){
         printf(WHITE "Digite o nome do produto que desejas cadastrar: " RESET);
-        if (!ler_string(nome, 100)) return;
+        if (!ler_string(nome, 100)){
+            printf(RED BOLD "\nErro ao ler string, retornando...\n" RESET);
+            pausar();
+            return;
+        }
         if (strlen(nome) <= 1 || strlen(nome) >= 20){
             printf(RED "\n--O nome deve ter mais do que um e menos do que 20 caracteres--\n" RESET);
+            pausar();
+            continue;
+        }
+        if (apenas_espacos(nome)){
+            printf(RED "\nO nome não deve ser composto apenas por espaços vazios\n" RESET);
             pausar();
             continue;
         }
@@ -65,7 +74,7 @@ void cadastrar_produto(ListaProdutos *control){
             pausar();
             continue;
         }
-        if (volume <= 0 || volume >= 11){
+        if (volume < 1 || volume > 10){
             printf(RED "\n--Volume deve ser um número entre 1 e 10--\n" RESET);
             pausar();
             continue;
@@ -98,9 +107,18 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
     char destino[128];
     while (1){
         printf(WHITE BOLD "\nInforme o destino do pedido: " RESET);
-        if (!ler_string(destino, 128)) return;
+        if (!ler_string(destino, 128)){
+            printf(RED BOLD "\nErro ao ler string, retornando...\n" RESET);
+            pausar();
+            return;
+        }
         if (strlen(destino) < 2){
             printf(RED "\nO destino deve conter pelo menos 2 caracteres.\n" RESET);
+            pausar();
+            continue;
+        }
+        if (apenas_espacos(destino)){
+            printf(RED "\nO destino não deve ser composto apenas por espaços vazios\n" RESET);
             pausar();
             continue;
         }

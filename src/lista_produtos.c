@@ -37,6 +37,9 @@ static void produto_inserir(ListaProdutos *control, Produto *produto){
 }
 
 Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control){
+    if (qtd <= 0 || volume < 1 || volume > 10){
+        return NULL;
+    }
     Produto *produto = (Produto *) malloc(sizeof(Produto));
     if (produto == NULL){
         return NULL;
@@ -56,7 +59,7 @@ Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaP
 }
 
 //CREATE
-ListaProdutos *lista_produto_criar(void){
+ListaProdutos *lista_produtos_criar(void){
     ListaProdutos *control  = (ListaProdutos *) malloc(sizeof(ListaProdutos));
     if (control == NULL){
         return NULL;

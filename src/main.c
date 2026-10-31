@@ -22,7 +22,7 @@ int main(void){
     #endif
     int op = -1;
     int res;
-    ListaProdutos *estoque = lista_produto_criar();
+    ListaProdutos *estoque = lista_produtos_criar();
     if (estoque == NULL){
         return EXIT_FAILURE;
     }
@@ -41,7 +41,7 @@ int main(void){
         printf("4. Ver fila de pedidos\n");
         printf("0. Encerrar\n\n");
 
-        printf("Informe sua opcao: ");
+        printf("Informe sua opção: ");
         res = ler_int(&op);
         if (res == EOF){
             printf("\nFim de arquivo atingido (EOF)\n");
@@ -71,7 +71,7 @@ int main(void){
                 break;
 
             default:
-                printf("Opcao invalida!\n");
+                printf("Opção inválida!\n");
                 pausar();
                 break;
         }
@@ -82,4 +82,4 @@ int main(void){
     return 0;
 }
 //Para compilar na versão atual: gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c -o programa.exe
-//OBS: NÃO APAGAR -> Mais pra frente utilizar EPOCH como parâmetro na lista de prioridades (Lá na parte 2)
+//OBS: NÃO APAGAR -> Mais pra frente utilizar EPOCH como parâmetro na lista de prioridades (Lá na parte 2) -> CANCELADO, falha em pedidos cadastrados no mesmo segundo, contador de chegada é melhor.

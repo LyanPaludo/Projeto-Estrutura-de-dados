@@ -14,7 +14,9 @@ Projeto desenvolvido na disciplina de Estrutura de Dados e Programação (2º se
 
 **Lista encadeada**: Armazenar os produtos, perfeita para adicionar um novo produto à lista e remover, caso necessário, facilitando a manipulação da lista.
 
-**Fila**: Uma lista encadeada onde é sempre o primeiro elemento quem é removido e os elementos são adicionados ao final. Utilizada para listar os pedidos em ordem de cadastro. OBS: Utilizado ponteiro genérico void *, já que a fila também será usada para as caixas e para evitar repetição de código.
+**Fila**: Uma lista encadeada onde é sempre o primeiro elemento quem é removido e os elementos são adicionados ao final (FIRST IN FIRST OUT). Utilizada para listar os pedidos em ordem de cadastro. OBS: Utilizado ponteiro genérico void *, já que a fila também será usada para as caixas e para evitar repetição de código.
+
+Pilha: Ao contrário da fila, a pilha é uma lista onde o último elemento à entrar é sempre o primeiro à sair (LAST IN FIRST OUT), igual uma pilha de fato. Utilizada para armazenar os produtos de cada pedido dentro de um pacote (ainda não completamente implementado).
 
 > *Para cada estrutura (lista, fila, pilha), uma linha dizendo onde ela é usada no sistema e por que foi a escolha adequada.*
 
@@ -36,13 +38,15 @@ No momento:
 
 **lista_produtos.c/.h** -> TAD que armazena as funções relacionadas aos produtos e à lista de produtos.
 
-pedido.c/.h -> TAD que armazena as funções relacionadas aos pedidos.
+**pedido.c/.h** -> TAD que armazena as funções relacionadas aos pedidos.
 
-fila.c/.h -> TAD que armazena as funções relacionadas às filas (uso de void * para encaixar tanto as filas de pedidos quanto as de pacotes).
+**fila.c/.h** -> TAD que armazena as funções relacionadas às filas (uso de void * para encaixar tanto as filas de pedidos quanto as de pacotes).
 
-cores.h -> Header contendo as cores para o display e interface.
+**pilha.c/.h** -> TAD que armazena as funções relacionadas às pilhas.
 
-(extra) teste_fila.c -> Arquivo para testar se o arquivo da fila estava funcionando, antes de conectar o restante do projeto.
+**cores.h** -> Header contendo as cores para o display e interface.
+
+(extra) teste_pilha.c -> Arquivo para testar se o arquivo da pilha estava funcionando, antes de conectar ao restante do projeto.
 
 ## Como compilar e executar
 
@@ -51,7 +55,7 @@ Ter GCC (minGW) ou MSVC instalado, para compilar e executar (na pasta raíz):
 Compilar para DEBUG:
 
 ```plaintext
-gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c -o programa.exe
+gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c -o programa.exe
 ./programa
 ```
 
@@ -80,11 +84,11 @@ Ao executar:
 
 Optei por separar as funções auxiliares em um utils.c, pois acabava usando-as em todos os outros módulos.
 
-Optei por usar um TAD para cada estrutura (atualmente conta apenas com o lista_produtos.c), cada TAD é encapsulado, outros módulos só conseguem acessar via função.
+Optei por usar um TAD para cada estrutura, cada TAD é encapsulado, outros módulos só conseguem acessar via função.
 
 Optei pelo uso de dois TADs separando a interface, um apenas para imprimir e outro para interagir, pois as funções que apenas imprimiam acabavam recebendo muitos includes não necessários.
 
-Optei pelo uso de uint64_t para os IDs, pensei em usar UUID o que torna infinitas as possibilidades, mas achei muito complexo para entender. Pesquisei, e encontrei o uint64_t que é um inteiro unsigned com 64 bits ao invés de 32, apesar de ocupar o dobro de memória em relação ao inteiro comum, a quantidade de identificadores que o uint64_t é em torno de 8,76 bilhões de vezes maior do que o do inteiro comum (int32_t), isso acontece pois dobra a quantidade de bytes e não considera números negativos (unsigned). OBS: no fim não vai ter tanto ID, usei este mais para ver como é...
+Optei pelo uso de uint64_t para os IDs, pensei em usar UUID o que torna infinitas as possibilidades, mas achei muito complexo para entender. Pesquisei, e encontrei o uint64_t que é um inteiro unsigned com 64 bits ao invés de 32, apesar de ocupar o dobro de memória em relação ao inteiro comum, a quantidade de identificadores que o uint64_t é em torno de 8,59 bilhões de vezes maior do que o do inteiro comum (int32_t), isso acontece pois dobra a quantidade de bytes, elevando ao quadrado a quantidade de valores, e não considera números negativos (unsigned). OBS: no fim não vai ter tanto ID, usei este mais para ver como é...
 
 Estoque descontado na separação com validação tudo-ou-nada, pedido sem estoque permanece na frente da fila, código gerado uint64_t, destino em texto fixo, item com ponteiro, fila com void *.
 
@@ -96,6 +100,9 @@ Optei pelo uso de ponteiro genérico (void *) para não ter que escrever dois ta
 ## Limitações conhecidas e próximos passos
 
 Scan de valores inteiros, como quantidade ou volume funcionam com entradas como "12abc", armazenando apenas o 12 (considerado aceitável).
+O contador do PED (ID do pedido) aumenta mesmo se o usuário cancelar, causando buracos entre um pedido e outro (considerado aceitável)
+
+> OBS: o que foi marcado com (considerado aceitável) só será corrigido se sobrar bastante tempo, se estar marcado com (considerado, por hora) será corrigido.
 
 ## Checklist de desenvolvimento
 
@@ -104,7 +111,7 @@ Scan de valores inteiros, como quantidade ou volume funcionam com entradas como 
 - [x] Implementar o cadastro de produtos com as validações exigidas
 - [x] Implementar o cadastro de pedidos com sua lista de itens
 - [x] Implementar o TAD de fila e enfileirar os pedidos
-- [ ] Implementar o TAD de pilha
+- [x] Implementar o TAD de pilha
 - [ ] Implementar a separação dos pedidos seguindo a ordem da fila
 - [ ] Implementar a montagem dos pacotes usando a pilha e a regra de capacidade
 - [ ] Implementar a fila de pacotes prontos para expedição

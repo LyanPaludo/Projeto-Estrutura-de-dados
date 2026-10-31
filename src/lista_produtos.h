@@ -11,7 +11,7 @@ typedef struct ListaProdutos ListaProdutos;
 Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control); //Função para cadastrar produto em uma lista de produtos
 
 //CREATE
-ListaProdutos *lista_produto_criar(void);//Funcao para criar a lista
+ListaProdutos *lista_produtos_criar(void);//Funcao para criar a lista
 
 //READ
 Produto *produto_search_name(const char *nome, ListaProdutos *control); //Pesquisar por nome
