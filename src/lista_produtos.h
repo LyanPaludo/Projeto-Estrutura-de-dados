@@ -1,37 +1,38 @@
 #ifndef LISTA_PRODUTOS_H
 #define LISTA_PRODUTOS_H
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct Produto Produto;
 
 typedef struct ListaProdutos ListaProdutos;
 
 //INSERT
-Produto *cad_prod_sys(char *nome, int qtd, int volume, ListaProdutos *control); //Função para cadastrar produto em uma lista de produtos
+Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control); //Função para cadastrar produto em uma lista de produtos
 
 //CREATE
-ListaProdutos *criar_lista_produto(void);//Funcao para criar a lista
+ListaProdutos *lista_produto_criar(void);//Funcao para criar a lista
 
 //READ
-Produto *pesquisar_por_nome(char *nome, ListaProdutos *control); //Pesquisar por nome
-Produto *pesquisar_por_codigo(uint64_t codigo, ListaProdutos *control); //Pesquisar por código
+Produto *produto_search_name(const char *nome, ListaProdutos *control); //Pesquisar por nome
+Produto *produto_search_code(uint64_t codigo, ListaProdutos *control); //Pesquisar por código
 
-const uint64_t getCode(Produto *produto); //Código do produto
-const char *getName(Produto *produto);    //Nome   do produto
-const int getQtd(Produto *produto);       //Quant. do produto
-const int getVolume(Produto *produto);    //Volume do produto
+uint64_t produto_get_code(Produto *produto); //Código do produto
+const char *produto_get_name(Produto *produto);    //Nome   do produto
+int produto_get_qtd(Produto *produto);       //Quant. do produto
+int produto_get_volume(Produto *produto);    //Volume do produto
 
-Produto *getFirst(ListaProdutos *control);  //Primeiro produto da lista
-Produto *getLast(ListaProdutos *control);   //Último   produto da lista
-Produto *getNext(Produto *produto);         //Próximo  produto da lista
+Produto *produto_get_first(ListaProdutos *control);  //Primeiro produto da lista
+Produto *produto_get_last(ListaProdutos *control);   //Último   produto da lista
+Produto *produto_get_next(Produto *produto);         //Próximo  produto da lista
 
 
 //UPDATE
-void aumentar_estoque(Produto *produto, int qtd);//Aumentar estoque
-bool descontar_estoque(Produto *produto, int qtd);//Descontar do estoque
+void produto_aumentar_estoque(Produto *produto, int qtd);//Aumentar estoque
+bool produto_descontar_estoque(Produto *produto, int qtd);//Descontar do estoque
 
 //DELETE
-void liberar_lista(ListaProdutos *control);
+void lista_produtos_liberar(ListaProdutos *control);
 
 
 #endif 

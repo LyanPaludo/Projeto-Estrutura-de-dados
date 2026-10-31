@@ -28,7 +28,7 @@ No momento:
 
 **utils.c/.h** -> Armazena as funções utilitárias, como "limpar_buffer";
 
-**display.c/.h** -> Armazena as funções que apenas imprimem na tela, como "imprimir_produto" e "imprimir_lista";
+**display.c/.h** -> Armazena as funções que apenas imprimem na tela, como "imprimir_produto" e "imprimir_lista_produtos";
 
 **interface.c/.h** -> Armazena as funções de interação com o usuário, como "cadastrar_produto";
 
@@ -53,15 +53,21 @@ gcc src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c -o
 
 Optei por separar as funções auxiliares em um utils.c, pois acabava usando-as em todos os outros módulos.
 
-Optei por usar um TAD para cada estrutura (atualmente conta apenas com o lista_produtos.c).
+Optei por usar um TAD para cada estrutura (atualmente conta apenas com o lista_produtos.c), cada TAD é encapsulado, outros módulos só conseguem acessar via função.
 
 Optei pelo uso de dois TADs separando a interface, um apenas para imprimir e outro para interagir, pois as funções que apenas imprimiam acabavam recebendo muitos includes não necessários.
 
 Optei pelo uso de uint64_t para os IDs, pensei em usar UUID o que torna infinitas as possibilidades, mas achei muito complexo para entender. Pesquisei, e encontrei o uint64_t que é um inteiro unsigned com 64 bits ao invés de 32, apesar de ocupar o dobro de memória em relação ao inteiro comum, a quantidade de identificadores que o uint64_t é em torno de 8,76 bilhões de vezes maior do que o do inteiro comum (int32_t), isso acontece pois dobra a quantidade de bytes e não considera números negativos (unsigned). OBS: no fim não vai ter tanto ID, usei este mais para ver como é...
 
+Estoque descontado na separação com validação tudo-ou-nada, pedido sem estoque permanece na frente da fila, código gerado uint64_t, destino em texto fixo, item com ponteiro, fila com void *.
+
+TADs: o nome começa pelo tipo que a função recebe ou cria, depois o verbo.
+Interface e display: verbo primeiro, o que recebe depois.
 > *Escolhas que você fez onde o enunciado deixava aberto, problemas que apareceram e como resolveu. Rende pontos de clareza e ajuda na hora de explicar o trabalho.*
 
 ## Limitações conhecidas e próximos passos
+
+Scan de valores inteiros, como quantidade ou volume funcionam com entradas como "12abc", armazenando apenas o 12 (considerado aceitável).
 
 > *O que ainda não faz ou faz de forma simplificada, e o que está previsto para as próximas partes (ex.: carregamento em caminhões).*
 

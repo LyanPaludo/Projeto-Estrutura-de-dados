@@ -17,7 +17,7 @@ void pausar(void) {
     limpar_tela();
 }
 
-char minusculizar(char c) {
+static char minusculizar(char c) {
     if (c >= 'A' && c <= 'Z') {
         return c + 32; //'a' até 'A' é 32 em ASCII
     }
@@ -36,7 +36,7 @@ int comparar_sem_case(const char *s1, const char *s2) {
     return (unsigned char)minusculizar(*s1) - (unsigned char)minusculizar(*s2);
 }
 
-void ler_string(char *dest, int tamanho){
+bool ler_string(char *dest, int tamanho){
     if (fgets(dest, tamanho, stdin) != NULL){
         size_t len = strlen(dest);
         if (len > 0 && dest[len-1] == '\n'){
@@ -44,5 +44,23 @@ void ler_string(char *dest, int tamanho){
         }else{
             limpar_buffer();
         }
+        return true;
+    }else{
+        dest[0] = '\0';
+        return false;
     }
-}//Função para ler string limitada e limpar excedentes;
+}
+
+int ler_int(int *var){
+    int res = scanf("%d", var);
+    if (res != 1){
+        if (res == EOF) {
+            limpar_buffer();
+            return EOF;
+        }
+        limpar_buffer();
+        return 0;
+    }
+    limpar_buffer();
+    return 1;
+}

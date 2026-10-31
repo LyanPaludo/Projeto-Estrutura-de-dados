@@ -1,32 +1,30 @@
 #include "lista_produtos.h"
 #include "utils.h"
-#include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
-typedef struct Produto{
+struct Produto{
     uint64_t codigo;
     char *nome;
     int qtd;                //Quantidade deste produto no estoque
     int volume;             //Volume ocupado por um único produto
     struct Produto *prox;   //Próximo produto na lista
-}Produto;
+};
 
-typedef struct ListaProdutos{
+struct ListaProdutos{
     int prod_total;     //Quantidade de produtos diferentes
     Produto *primeiro;
     Produto *ultimo;
-}ListaProdutos;
+};
 
 //GERAR PRÓXIMO CÓDIGO
-static uint64_t gerar_prox_cod(void) {
+static uint64_t produto_gerar_cod(void) {
     static uint64_t contador_cod = 1;
     return contador_cod++;
 }
 //INSERT
-static void inserir_produto(ListaProdutos *control, Produto *produto){
+static void produto_inserir(ListaProdutos *control, Produto *produto){
     if (control->primeiro == NULL){
         control->primeiro       = produto;
         control->ultimo         = produto;
@@ -38,7 +36,7 @@ static void inserir_produto(ListaProdutos *control, Produto *produto){
     control->prod_total += 1;
 }
 
-Produto *cad_prod_sys(char *nome, int qtd, int volume, ListaProdutos *control){
+Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control){
     Produto *produto = (Produto *) malloc(sizeof(Produto));
     if (produto == NULL){
         return NULL;
@@ -52,13 +50,13 @@ Produto *cad_prod_sys(char *nome, int qtd, int volume, ListaProdutos *control){
     produto->nome   = name;
     produto->qtd    = qtd;
     produto->volume = volume;
-    produto->codigo = gerar_prox_cod();
-    inserir_produto(control, produto);
+    produto->codigo = produto_gerar_cod();
+    produto_inserir(control, produto);
     return produto;
 }
 
 //CREATE
-ListaProdutos *criar_lista_produto(void){
+ListaProdutos *lista_produto_criar(void){
     ListaProdutos *control  = (ListaProdutos *) malloc(sizeof(ListaProdutos));
     if (control == NULL){
         return NULL;
@@ -71,7 +69,7 @@ ListaProdutos *criar_lista_produto(void){
 }
 
 //READ
-Produto *pesquisar_por_nome(char *nome, ListaProdutos *control){
+Produto *produto_search_name(const char *nome, ListaProdutos *control){
     Produto *atual = control->primeiro;
     while (atual != NULL){
         if (comparar_sem_case(nome, atual->nome)==0){
@@ -81,7 +79,7 @@ Produto *pesquisar_por_nome(char *nome, ListaProdutos *control){
     }
     return NULL;
 }
-Produto *pesquisar_por_codigo(uint64_t codigo, ListaProdutos *control){
+Produto *produto_search_code(uint64_t codigo, ListaProdutos *control){
     Produto *atual = control->primeiro;
     while (atual != NULL){
         if (atual->codigo == codigo){
@@ -91,33 +89,33 @@ Produto *pesquisar_por_codigo(uint64_t codigo, ListaProdutos *control){
     }
     return NULL;
 }
-const uint64_t getCode(Produto *produto){
+uint64_t produto_get_code(Produto *produto){
     return produto->codigo;
 }
-const char *getName(Produto *produto){
+const char *produto_get_name(Produto *produto){
     return produto->nome;
 }
-const int getQtd(Produto *produto){
+int produto_get_qtd(Produto *produto){
     return produto->qtd;
 }
-const int getVolume(Produto *produto){
+int produto_get_volume(Produto *produto){
     return produto->volume;
 }
-Produto *getFirst(ListaProdutos *control){
+Produto *produto_get_first(ListaProdutos *control){
     return control->primeiro;
 }
-Produto *getLast(ListaProdutos *control){
+Produto *produto_get_last(ListaProdutos *control){
     return control->ultimo;
 }
-Produto *getNext(Produto *produto){
+Produto *produto_get_next(Produto *produto){
     return produto->prox;
 }
 
 //UPDATE
-void aumentar_estoque(Produto *produto, int qtd){
+void produto_aumentar_estoque(Produto *produto, int qtd){
     produto->qtd += qtd;
 }
-bool descontar_estoque(Produto *produto, int qtd){
+bool produto_descontar_estoque(Produto *produto, int qtd){
     if (produto->qtd - qtd < 0){
         return false;
     }
@@ -126,15 +124,15 @@ bool descontar_estoque(Produto *produto, int qtd){
 }
 
 //DELETE
-static void liberar_produto(Produto *produto){
+static void produto_liberar(Produto *produto){
     free(produto->nome);
     free(produto);
 }
-void liberar_lista(ListaProdutos *control){
+void lista_produtos_liberar(ListaProdutos *control){
     Produto *atual = control->primeiro;
     while (atual!=NULL){
         Produto *prox = atual->prox;
-        liberar_produto(atual);
+        produto_liberar(atual);
         atual = prox;
     }
     free(control);
