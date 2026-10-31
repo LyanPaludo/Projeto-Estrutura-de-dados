@@ -1,6 +1,6 @@
 #include "interface.h"
 #include "lista_produtos.h"
-#include "lista_pedidos.h"
+#include "pedido.h"
 #include "utils.h"
 #include "display.h"
 #include "cores.h"
@@ -85,7 +85,7 @@ void cadastrar_produto(ListaProdutos *control){
     return;
 }
 
-void cadastrar_pedido(ListaPedidos *lista, ListaProdutos *estoque){
+void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
     if (estoque == NULL || produto_get_first(estoque) == NULL){
         printf(RED "\nNão há produtos cadastrados no estoque, impossível prosseguir com o cadastro do pedido.\n" RESET);
         pausar();
@@ -186,6 +186,7 @@ void cadastrar_pedido(ListaPedidos *lista, ListaProdutos *estoque){
             if (res == EOF){
                 printf("\nFim de arquivo atingido (EOF)\n");
                 pedido_liberar(pedido);
+                pausar();
                 return;
             }else if (res == 0){
                 printf(RED BOLD "\nErro: scanf da opção\n" RESET);
@@ -195,17 +196,22 @@ void cadastrar_pedido(ListaPedidos *lista, ListaProdutos *estoque){
             if (op == 1){
                 break;
             }else if (op == 2){
-                pedido_cadastrar_lista(lista, pedido);
+                if (!fila_enfileirar(fila_pedidos, pedido)){
+                    printf(RED BOLD "\nErro: enfileiramento do pedido\n" RESET);
+                    pedido_liberar(pedido);
+                    pausar();
+                    return;
+                }
                 printf(WHITE BOLD "\nCadastro do pedido realizado com sucesso!\n" RESET);
                 printf(GREEN "\nID do pedido: " RESET);
                 printf(WHITE ULINED "%s \n" RESET, pedido_get_code(pedido));
+                pausar();
                 return;
             }else{
                 printf(RED "\nOpção inválida, tente novamente.\n" RESET);
+                pausar();
                 continue;
             }
         }
     }
-    
-
 }

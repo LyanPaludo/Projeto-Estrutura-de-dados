@@ -4,12 +4,16 @@
 #include "utils.h"
 #include "display.h"
 #include "interface.h"
-#include "lista_pedidos.h"
+#include "pedido.h"
+#include "fila.h"
 
 #ifdef _WIN32
 #include <windows.h>  
 #endif
 
+static void liberar_pedido_void(void *dado){ 
+    pedido_liberar((Pedido *)dado); 
+}
 
 int main(void){
     #ifdef _WIN32
@@ -23,8 +27,8 @@ int main(void){
         return EXIT_FAILURE;
     }
 
-    ListaPedidos *pedidos = lista_pedidos_criar();
-    if (pedidos == NULL){
+    Fila *fila_pedidos = fila_criar();
+    if (fila_pedidos == NULL){
         lista_produtos_liberar(estoque);
         return EXIT_FAILURE;
     }
@@ -34,6 +38,7 @@ int main(void){
         printf("1. Cadastrar Produto\n");
         printf("2. Cadastrar Pedido\n");
         printf("3. Listar produtos\n");
+        printf("4. Ver fila de pedidos\n");
         printf("0. Encerrar\n\n");
 
         printf("Informe sua opcao: ");
@@ -51,10 +56,14 @@ int main(void){
                 cadastrar_produto(estoque);
                 break;
             case 2:
-                cadastrar_pedido(pedidos, estoque);
+                cadastrar_pedido(fila_pedidos, estoque);
                 break;
             case 3:
                 imprimir_lista_produtos(estoque);
+                pausar();
+                break;
+            case 4:
+                imprimir_fila_pedidos(fila_pedidos);
                 pausar();
                 break;
             case 0:
@@ -68,9 +77,9 @@ int main(void){
         }
     } while (op != 0);
 
-    lista_pedidos_liberar(pedidos);
+    fila_liberar(fila_pedidos, liberar_pedido_void);
     lista_produtos_liberar(estoque);
     return 0;
 }
-
+//Para compilar na versão atual: gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c -o programa.exe
 //OBS: NÃO APAGAR -> Mais pra frente utilizar EPOCH como parâmetro na lista de prioridades (Lá na parte 2)

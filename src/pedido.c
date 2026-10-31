@@ -1,5 +1,5 @@
 #include "lista_produtos.h"
-#include "lista_pedidos.h"
+#include "pedido.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -18,12 +18,6 @@ struct Pedido{
     STATUS stat;
     PedidoItem *primeiro;
     PedidoItem *ultimo;
-    Pedido *prox;
-};
-
-struct ListaPedidos{
-    Pedido *primeiro;
-    Pedido *ultimo;
 };
     
 //GERAR CÓDIGO DO PEDIDO
@@ -62,28 +56,7 @@ PedidoItem *pedido_item_cadastrar(Pedido *pedido, Produto *produto, int qtd){
     return item;
 }
 
-Pedido *pedido_cadastrar_lista(ListaPedidos *lista, Pedido *pedido){
-    if (lista->primeiro == NULL){
-        lista->primeiro = pedido;
-        lista->ultimo   = pedido;
-    }else{
-        lista->ultimo->prox = pedido;
-        lista->ultimo = pedido;
-    }
-    return pedido;
-}
-
 //CREATE
-ListaPedidos *lista_pedidos_criar(void){
-    ListaPedidos *lista  = (ListaPedidos *) malloc(sizeof(ListaPedidos));
-    if (lista == NULL){
-        return NULL;
-    }
-    lista->primeiro   = NULL;
-    lista->ultimo     = NULL;
-    return lista;
-}
-
 Pedido *pedido_criar(const char *destino){
     Pedido *pedido = (Pedido *) malloc(sizeof(Pedido));
     if (pedido == NULL){
@@ -91,7 +64,6 @@ Pedido *pedido_criar(const char *destino){
     }
     pedido->primeiro = NULL;
     pedido->ultimo   = NULL;
-    pedido->prox     = NULL;
     
     strncpy(pedido->destino, destino, sizeof(pedido->destino) - 1);
     pedido->destino[sizeof(pedido->destino) - 1] = '\0';
@@ -106,17 +78,6 @@ Pedido *pedido_criar(const char *destino){
 }
 
 //READ
-Pedido *pedido_search_code(ListaPedidos *control, const char *codigo){
-    Pedido *atual = control->primeiro;
-    while (atual != NULL){
-        if (strcmp(atual->codigo, codigo) == 0){
-            return atual;
-        }
-        atual = atual->prox;
-    }
-    return NULL;
-}
-
 PedidoItem *pedido_item_search(Pedido *pedido, Produto *produto){
     PedidoItem *atual = pedido->primeiro;
     while (atual != NULL){
@@ -139,16 +100,6 @@ PedidoItem *pedido_item_get_first(Pedido *pedido){
 PedidoItem *pedido_item_get_last(Pedido *pedido){
     return pedido->ultimo;
 }
-Pedido *pedido_get_next(Pedido *pedido){
-    return pedido->prox;
-}
-Pedido *pedido_get_first(ListaPedidos *control){
-    return control->primeiro;
-}
-Pedido *pedido_get_last(ListaPedidos *control){
-    return control->ultimo;
-}
-
 const char *pedido_get_code(Pedido *pedido){
     return pedido->codigo;
 }
@@ -186,16 +137,6 @@ void pedido_liberar(Pedido *pedido){
     }
     free(pedido->codigo);
     free(pedido);
-}
-
-void lista_pedidos_liberar(ListaPedidos *lista){
-    Pedido *atual = lista->primeiro;
-    while (atual != NULL){
-        Pedido *prox = atual->prox;
-        pedido_liberar(atual);
-        atual = prox;
-    }
-    free(lista);
 }
 
 

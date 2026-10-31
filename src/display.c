@@ -32,6 +32,10 @@ void imprimir_lista_produtos(ListaProdutos *control){
 }//imprimir toda uma lista de produtos
 
 void imprimir_pedido(Pedido *pedido){
+    if (pedido == NULL){
+        printf(RED "\nPedido vazio\n" RESET);
+        return;
+    }
     printf(GREEN BOLD "\n-- PEDIDO %s --\n" RESET, pedido_get_code(pedido));
     printf(GREEN "\nDestino: " RESET WHITE "%s" RESET, pedido_get_destino(pedido));
     printf(GREEN "\nStatus: " RESET WHITE "%s\n" RESET, pedido_get_status(pedido));
@@ -39,7 +43,7 @@ void imprimir_pedido(Pedido *pedido){
     while (atual != NULL){
         Produto *produto = pedido_item_get_produto(atual);
         printf(GREEN "\nItem: " RESET WHITE "%s" RESET, produto_get_name(produto));
-        printf(GREEN "\nQuantidade: " RESET WHITE "%d" RESET, pedido_item_get_qtd(atual));
+        printf(GREEN "\nQuantidade: " RESET WHITE "%d\n" RESET, pedido_item_get_qtd(atual));
         atual = pedido_item_get_next(atual);
     }
 }
@@ -50,10 +54,10 @@ static void visitar_pedido(void *dado){
 
 void imprimir_fila_pedidos(Fila *fila){
     if (fila_espiar_frente(fila) == NULL){
-        printf(RED "\n--A Fila está fazia!--\n" RESET);
+        printf(RED "\n--A Fila está vazia!--\n" RESET);
         return;
     }
     printf(RED ULINED "\n--Super imprimidor de filas--\n" RESET);
     fila_percorrer(fila, visitar_pedido);
-    printf(RED ULINED "\n--Fim da Imprimição--\n" RESET);
+    printf(RED ULINED "\n--Fim da Impressão--\n" RESET);
 }

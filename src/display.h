@@ -1,7 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 #include "lista_produtos.h"
-#include "lista_pedidos.h"
+#include "pedido.h"
 #include "fila.h"
 
 void imprimir_produto(Produto *produto); //Função para imprimir um único produto
