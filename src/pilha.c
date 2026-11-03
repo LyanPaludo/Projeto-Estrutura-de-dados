@@ -1,13 +1,13 @@
 #include "pilha.h"
 #include <stdlib.h>
 
-typedef struct No{
+typedef struct PilhaNo{
     Produto *produto;
-    struct No *abaixo;
-}No;
+    struct PilhaNo *abaixo;
+}PilhaNo;
 
 struct Pilha{
-    No *topo;
+    PilhaNo *topo;
     int tamanho;
     int volume;
 };
@@ -32,7 +32,7 @@ Produto *pilha_espiar_topo(Pilha *pilha){
 }
 
 void pilha_percorrer(Pilha *pilha, void (*visitar)(Produto *)){
-    No *atual = pilha->topo;
+    PilhaNo *atual = pilha->topo;
     while (atual != NULL){
         visitar(atual->produto);
         atual = atual->abaixo;
@@ -54,7 +54,7 @@ bool pilha_empilhar(Pilha *pilha, Produto *produto){
     if (produto == NULL){
         return false;
     }
-    No *no = (No *) malloc(sizeof(No));
+    PilhaNo *no = (PilhaNo *) malloc(sizeof(PilhaNo));
     if (no == NULL){
         return false;
     }
@@ -70,7 +70,7 @@ Produto *pilha_desempilhar(Pilha *pilha){
     if (pilha->topo == NULL){
         return NULL;
     }
-    No *topo = pilha->topo;
+    PilhaNo *topo = pilha->topo;
     Produto *produto = topo->produto;
     pilha->topo = topo->abaixo;
     pilha->tamanho--;
@@ -81,9 +81,9 @@ Produto *pilha_desempilhar(Pilha *pilha){
 
 //DELETE
 void pilha_liberar(Pilha *pilha){
-    No *atual = pilha->topo;
+    PilhaNo *atual = pilha->topo;
     while (atual != NULL){
-        No *abaixo = atual->abaixo;
+        PilhaNo *abaixo = atual->abaixo;
         free(atual);
         atual = abaixo;
     }

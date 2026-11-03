@@ -6,6 +6,8 @@
 #include "interface.h"
 #include "pedido.h"
 #include "fila.h"
+#include "separacao.h"
+#include "pacote.h"
 
 #ifdef _WIN32
 #include <windows.h>  
@@ -13,6 +15,9 @@
 
 static void liberar_pedido_void(void *dado){ 
     pedido_liberar((Pedido *)dado); 
+}
+static void liberar_pacote_void(void *dado){ 
+    pacote_liberar((Pacote *)dado); 
 }
 
 int main(void){
@@ -33,12 +38,21 @@ int main(void){
         return EXIT_FAILURE;
     }
 
+    Fila *fila_pacotes = fila_criar();
+    if (fila_pacotes == NULL){
+        lista_produtos_liberar(estoque);
+        fila_liberar(fila_pedidos, liberar_pedido_void);
+        return EXIT_FAILURE;
+    }
+
     do {
         printf("=== VENDA CERTA ===\n\n");
         printf("1. Cadastrar Produto\n");
         printf("2. Cadastrar Pedido\n");
         printf("3. Listar produtos\n");
         printf("4. Ver fila de pedidos\n");
+        printf("5. Separar próximo pedido\n");
+        printf("6. Ver pacotes prontos\n");
         printf("0. Encerrar\n\n");
 
         printf("Informe sua opção: ");
@@ -66,6 +80,14 @@ int main(void){
                 imprimir_fila_pedidos(fila_pedidos);
                 pausar();
                 break;
+            case 5:
+                separar_pedido(fila_pedidos, fila_pacotes);
+                pausar();
+                break;
+            case 6:
+                imprimir_fila_pacotes(fila_pacotes);
+                pausar();
+                break;
             case 0:
                 printf("Encerrando...\n");
                 break;
@@ -77,9 +99,11 @@ int main(void){
         }
     } while (op != 0);
 
+    fila_liberar(fila_pacotes, liberar_pacote_void);
     fila_liberar(fila_pedidos, liberar_pedido_void);
     lista_produtos_liberar(estoque);
     return 0;
 }
-//Para compilar na versão atual: gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c -o programa.exe
+//Para compilar na versão atual: 
+//gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c -o programa.exe
 //OBS: NÃO APAGAR -> Mais pra frente utilizar EPOCH como parâmetro na lista de prioridades (Lá na parte 2) -> CANCELADO, falha em pedidos cadastrados no mesmo segundo, contador de chegada é melhor.

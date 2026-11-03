@@ -1,10 +1,17 @@
 #include "lista_produtos.h"
 #include "pedido.h"
+#include "constantes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <inttypes.h>
+#include <limits.h>
+
+typedef enum{
+    AGUARDANDO,
+    SEPARADO
+}STATUS;
 
 struct PedidoItem{
     Produto *produto;
@@ -14,7 +21,7 @@ struct PedidoItem{
 
 struct Pedido{
     char *codigo;
-    char destino[128];
+    char destino[DESTINO_TAM];
     STATUS stat;
     PedidoItem *primeiro;
     PedidoItem *ultimo;
@@ -34,6 +41,12 @@ static char* pedido_gerar_cod(void) {
 
 //INSERT
 PedidoItem *pedido_item_cadastrar(Pedido *pedido, Produto *produto, int qtd){
+    if (produto == NULL){
+        return NULL;
+    }
+    if (qtd <= 0){
+        return NULL;
+    }
     PedidoItem *item = pedido_item_search(pedido, produto);
     if (item != NULL){
         item->qtd += qtd;
@@ -122,6 +135,12 @@ Produto *pedido_item_get_produto(PedidoItem *item){
 }
 
 //UPDATE
+void pedido_marcar_separado(Pedido *pedido){
+    if (pedido == NULL){
+        return;
+    }
+    pedido->stat = SEPARADO;
+}
 
 //DELETE
 static void pedido_item_liberar(PedidoItem *item){

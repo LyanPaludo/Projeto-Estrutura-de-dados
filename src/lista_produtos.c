@@ -1,8 +1,10 @@
 #include "lista_produtos.h"
 #include "utils.h"
+#include "constantes.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <limits.h>
 
 struct Produto{
     uint64_t codigo;
@@ -37,7 +39,7 @@ static void produto_inserir(ListaProdutos *control, Produto *produto){
 }
 
 Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control){
-    if (qtd <= 0 || volume < 1 || volume > 10){
+    if (qtd <= 0 || volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
         return NULL;
     }
     Produto *produto = (Produto *) malloc(sizeof(Produto));
@@ -115,10 +117,20 @@ Produto *produto_get_next(Produto *produto){
 }
 
 //UPDATE
-void produto_aumentar_estoque(Produto *produto, int qtd){
+bool produto_aumentar_estoque(Produto *produto, int qtd){
+    if (produto == NULL){
+        return false;
+    }
+    if (qtd <= 0 || qtd > (INT_MAX - produto->qtd)){
+        return false;
+    }
     produto->qtd += qtd;
+    return true;
 }
 bool produto_descontar_estoque(Produto *produto, int qtd){
+    if (qtd <= 0){
+        return false;
+    }
     if (produto->qtd - qtd < 0){
         return false;
     }

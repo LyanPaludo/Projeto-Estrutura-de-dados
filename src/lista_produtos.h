@@ -28,7 +28,7 @@ Produto *produto_get_next(Produto *produto);         //Próximo  produto da list
 
 
 //UPDATE
-void produto_aumentar_estoque(Produto *produto, int qtd);//Aumentar estoque
+bool produto_aumentar_estoque(Produto *produto, int qtd);//Aumentar estoque
 bool produto_descontar_estoque(Produto *produto, int qtd);//Descontar do estoque
 
 //DELETE

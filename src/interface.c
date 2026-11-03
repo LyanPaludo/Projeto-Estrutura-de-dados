@@ -4,6 +4,8 @@
 #include "utils.h"
 #include "display.h"
 #include "cores.h"
+#include "constantes.h"
+#include "separacao.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -58,12 +60,14 @@ void cadastrar_produto(ListaProdutos *control){
         imprimir_produto(produto);
         printf(RED BOLD "\nA quantidade será aumentada e o volume antigo será mantido!\n" RESET);
         pausar();
-        produto_aumentar_estoque(produto, qtd);
+        if (!produto_aumentar_estoque(produto, qtd)){
+            printf(RED BOLD "\nErro: entrada inválida da quantidade detectada.\n" RESET);
+        }
         return;
     }
 
     while (1){//volume
-        printf(WHITE BOLD "\nDigite o volume que o produto ocupa (1-10): " RESET);
+        printf(WHITE BOLD "\nDigite o volume que o produto ocupa: " RESET);
         res = ler_int(&volume);
         if (res == EOF){
             printf("\nFim de arquivo atingido (EOF)\n");
@@ -74,8 +78,8 @@ void cadastrar_produto(ListaProdutos *control){
             pausar();
             continue;
         }
-        if (volume < 1 || volume > 10){
-            printf(RED "\n--Volume deve ser um número entre 1 e 10--\n" RESET);
+        if (volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
+            printf(RED "\n--Volume deve ser um número entre %d e %d--\n" RESET, PRODUTO_VOLUME_MIN, PRODUTO_VOLUME_MAX);
             pausar();
             continue;
         }
@@ -104,10 +108,10 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
     int res;
     int cod;
     int qtd;
-    char destino[128];
+    char destino[DESTINO_TAM];
     while (1){
         printf(WHITE BOLD "\nInforme o destino do pedido: " RESET);
-        if (!ler_string(destino, 128)){
+        if (!ler_string(destino, DESTINO_TAM)){
             printf(RED BOLD "\nErro ao ler string, retornando...\n" RESET);
             pausar();
             return;
@@ -232,4 +236,28 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
             }
         }
     }
+}
+
+void separar_pedido(Fila *pedidos, Fila *pacotes){
+    Pedido *separado = NULL;
+    int antes = fila_tamanho(pacotes);
+    ResultadoSeparacao r = separar_prox_pedido(pedidos, pacotes, &separado);
+    if (r == SEPARACAO_FILA_VAZIA){
+        printf(RED "\nNão há pedidos!\n" RESET);
+        return;
+    }
+    if (r == SEPARACAO_SEM_ESTOQUE){
+        printf(RED "\n -Não há estoque o bastante para separar o próximo pedido!- \n" RESET);
+        printf(WHITE BOLD "O próximo pedido permanecerá na fila até o estoque ser reabastecido!\n" RESET);
+        printf(GREEN "Reabasteça o estoque com 1 (Cadastrar Produto)\n" RESET);
+        return;
+    }
+    if (r == SEPARACAO_ERRO){
+        printf(RED BOLD "\nErro: separação do pedido\n" RESET);
+        return;
+    }
+    imprimir_pedido(separado);
+    printf(GREEN "\nForam gerados " RESET WHITE "%d" RESET GREEN " novos pacotes!\n" RESET, (fila_tamanho(pacotes) - antes));
+    pedido_liberar(separado);
+    return;
 }

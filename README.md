@@ -101,8 +101,9 @@ Optei pelo uso de ponteiro genérico (void *) para não ter que escrever dois ta
 
 Scan de valores inteiros, como quantidade ou volume funcionam com entradas como "12abc", armazenando apenas o 12 (considerado aceitável).
 O contador do PED (ID do pedido) aumenta mesmo se o usuário cancelar, causando buracos entre um pedido e outro (considerado aceitável)
-
-> OBS: o que foi marcado com (considerado aceitável) só será corrigido se sobrar bastante tempo, se estar marcado com (considerado, por hora) será corrigido.
+Um pedido sem estoque trava a fila até alguém repor, ele manda devolta ao menu e espera a reposição, (considerado aceitável).
+se o malloc falhar no meio da montagem, o estoque já foi descontado e alguns pacotes podem já estar na fila (considerado mais ou menos aceitável -> já que considero falta de memória uma exceção);
+> OBS: o que foi marcado com (considerado aceitável) só será corrigido se sobrar bastante tempo, se estar marcado com (considerado, por hora) será corrigido, se é mais ou menos aceitável, talvez eu corrija, talvez não :D.
 
 ## Checklist de desenvolvimento
 
@@ -112,7 +113,7 @@ O contador do PED (ID do pedido) aumenta mesmo se o usuário cancelar, causando 
 - [x] Implementar o cadastro de pedidos com sua lista de itens
 - [x] Implementar o TAD de fila e enfileirar os pedidos
 - [x] Implementar o TAD de pilha
-- [ ] Implementar a separação dos pedidos seguindo a ordem da fila
+- [x] Implementar a separação dos pedidos seguindo a ordem da fila
 - [ ] Implementar a montagem dos pacotes usando a pilha e a regra de capacidade
 - [ ] Implementar a fila de pacotes prontos para expedição
 - [ ] Integrar todas as funcionalidades ao menu principal

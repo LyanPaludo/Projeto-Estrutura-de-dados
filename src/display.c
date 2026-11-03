@@ -51,12 +51,48 @@ static void visitar_pedido(void *dado){
     imprimir_pedido((Pedido *)dado);
 }
 
-void imprimir_fila_pedidos(Fila *fila){
-    if (fila_espiar_frente(fila) == NULL){
+void imprimir_fila_pedidos(Fila *pedidos){
+    if (fila_espiar_frente(pedidos) == NULL){
         printf(RED "\n--A Fila está vazia!--\n" RESET);
         return;
     }
-    printf(RED ULINED "\n--Super imprimidor de filas--\n" RESET);
-    fila_percorrer(fila, visitar_pedido);
+    printf(RED ULINED "\n--Super imprimidor de pedidos--\n" RESET);
+    fila_percorrer(pedidos, visitar_pedido);
+    printf(RED ULINED "\n--Fim da Impressão--\n" RESET);
+}
+
+static void imprimir_item_pacote(Produto *produto){
+    if (produto == NULL){
+        printf(RED "\nProduto inexistente\n" RESET);
+        return;
+    }
+    printf(GREEN "\n   -> Item: " RESET WHITE "%s" RESET, produto_get_name(produto));
+}
+
+void imprimir_pacote(Pacote *pacote){
+    if (pacote == NULL){
+        printf(RED BOLD "\nPacote inexistente\n" RESET);
+        return;
+    }
+    printf(WHITE BOLD "\n - PACOTE - \n" RESET);
+    printf(GREEN "\nCod. pacote: " RESET WHITE "%s" RESET, pacote_get_codigo(pacote));
+    printf(GREEN "\nDest. pacote: " RESET WHITE "%s" RESET, pacote_get_destino(pacote));
+    printf(GREEN "\nVol. pacote: " RESET WHITE "%d" RESET, pacote_get_volume(pacote));
+    printf(GREEN "\nQtd. unidades: " RESET WHITE "%d" RESET, pacote_get_qtd(pacote));
+    pacote_percorrer(pacote, imprimir_item_pacote);
+    printf("\n");
+}
+
+static void visitar_pacote(void *dado){
+    imprimir_pacote((Pacote *)dado);
+}
+
+void imprimir_fila_pacotes(Fila *pacotes){
+    if (fila_espiar_frente(pacotes) == NULL){
+        printf(RED "\n--A Fila está vazia!--\n" RESET);
+        return;
+    }
+    printf(RED ULINED "\n--Super imprimidor de pacotes--\n" RESET);
+    fila_percorrer(pacotes, visitar_pacote);
     printf(RED ULINED "\n--Fim da Impressão--\n" RESET);
 }

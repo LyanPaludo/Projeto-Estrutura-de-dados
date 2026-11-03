@@ -2,11 +2,6 @@
 #define PEDIDO_H
 #include "lista_produtos.h"
 
-typedef enum{
-    AGUARDANDO,
-    SEPARADO
-}STATUS;
-
 typedef struct PedidoItem PedidoItem;
 
 typedef struct Pedido Pedido;
@@ -29,6 +24,7 @@ int pedido_item_get_qtd(PedidoItem *item);
 Produto *pedido_item_get_produto(PedidoItem *item);
 
 //UPDATE
+void pedido_marcar_separado(Pedido *pedido);
 
 //DELETE
 void pedido_liberar(Pedido *pedido);
