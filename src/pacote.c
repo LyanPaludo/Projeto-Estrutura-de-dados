@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 struct Pacote{
     char *codigo;
@@ -89,9 +88,7 @@ ResultadoPacote pacote_adicionar_produto(Pacote *pacote, Produto *produto){
         return PACOTE_ERRO;
     }
     if (pilha_volume(pacote->itens) > PACOTE_CAPACIDADE){
-        Produto *removido = pilha_desempilhar(pacote->itens);
-        assert(removido == produto);
-        (void)removido;
+        pilha_desempilhar(pacote->itens);
         return PACOTE_NAO_COUBE;
     }
     return PACOTE_ADICIONADO;

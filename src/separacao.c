@@ -1,6 +1,7 @@
 #include "lista_produtos.h"
 #include "separacao.h" 
 #include "pacote.h"
+#include <stdbool.h>
 
 static bool estoque_suficiente(Pedido *pedido){
     if (pedido == NULL){
@@ -21,12 +22,11 @@ static bool estoque_suficiente(Pedido *pedido){
 static bool montar_pacotes(Pedido *pedido, Fila *pacotes){
     int n = 1;
     PedidoItem *item = pedido_item_get_first(pedido);
-    Pacote *pack;
+    Pacote *pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido));
+    if (pack == NULL){
+        return false;
+    }
     while (item != NULL){
-        pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido));
-        if (pack == NULL){
-            return false;
-        }
         for (int i=0; i<(pedido_item_get_qtd(item)); i++){
             ResultadoPacote r = pacote_adicionar_produto(pack, pedido_item_get_produto(item));
             if (r == PACOTE_ERRO){
@@ -41,19 +41,29 @@ static bool montar_pacotes(Pedido *pedido, Fila *pacotes){
                 if (!fila_enfileirar(pacotes, pack)){
                     pacote_liberar(pack);
                     return false;
-                }else{
-                    n++;
-                    continue;
+                }
+                n++;
+                pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido));
+                if (pack == NULL){
+                    return false;
+                }
+                if (pacote_adicionar_produto(pack, pedido_item_get_produto(item)) != PACOTE_ADICIONADO){
+                    pacote_liberar(pack);
+                    return false;
                 }
             }
         }
         item = pedido_item_get_next(item);
     }
-    fila_enfileirar(pacotes, pack);
+    if (!fila_enfileirar(pacotes, pack)){
+        pacote_liberar(pack);
+        return false;
+    }
     return true;
 }
 
 ResultadoSeparacao separar_prox_pedido(Fila *pedidos, Fila *pacotes, Pedido **separado){
+    *separado = NULL;
     Pedido *pedido = fila_espiar_frente(pedidos);
     if (pedido == NULL){
         return SEPARACAO_FILA_VAZIA;
@@ -64,12 +74,14 @@ ResultadoSeparacao separar_prox_pedido(Fila *pedidos, Fila *pacotes, Pedido **se
     pedido = fila_desenfileirar(pedidos);
     PedidoItem *item = pedido_item_get_first(pedido);
     while (item != NULL){
-        produto_descontar_estoque(pedido_item_get_produto(item), pedido_item_get_qtd(item));
+        if (!produto_descontar_estoque(pedido_item_get_produto(item), pedido_item_get_qtd(item))){
+            pedido_liberar(pedido);
+            return SEPARACAO_ERRO;
+        }
         item = pedido_item_get_next(item);
     }
     if (!montar_pacotes(pedido, pacotes)){
         pedido_liberar(pedido);
-        *separado = NULL;
         return SEPARACAO_ERRO;
     }
     pedido_marcar_separado(pedido);

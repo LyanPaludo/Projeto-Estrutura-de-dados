@@ -105,5 +105,5 @@ int main(void){
     return 0;
 }
 //Para compilar na versão atual: 
-//gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c -o programa.exe
+//gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
 //OBS: NÃO APAGAR -> Mais pra frente utilizar EPOCH como parâmetro na lista de prioridades (Lá na parte 2) -> CANCELADO, falha em pedidos cadastrados no mesmo segundo, contador de chegada é melhor.

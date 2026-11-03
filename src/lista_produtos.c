@@ -39,7 +39,7 @@ static void produto_inserir(ListaProdutos *control, Produto *produto){
 }
 
 Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control){
-    if (qtd <= 0 || volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
+    if (nome == NULL || control == NULL || qtd <= 0 || volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
         return NULL;
     }
     Produto *produto = (Produto *) malloc(sizeof(Produto));
@@ -74,6 +74,24 @@ ListaProdutos *lista_produtos_criar(void){
 }
 
 //READ
+void lista_produtos_percorrer(ListaProdutos *estoque, void (*visitar)(Produto *p)){
+    if (lista_produtos_vazia(estoque)){
+        return;
+    }
+    Produto *atual = estoque->primeiro;
+    while (atual != NULL){
+        visitar(atual);
+        atual = atual->prox;
+    }
+}
+
+bool lista_produtos_vazia(ListaProdutos *estoque){
+    if (estoque == NULL || estoque->primeiro == NULL){
+        return true;
+    }
+    return false;
+}
+
 Produto *produto_search_name(const char *nome, ListaProdutos *control){
     Produto *atual = control->primeiro;
     while (atual != NULL){
@@ -106,28 +124,22 @@ int produto_get_qtd(Produto *produto){
 int produto_get_volume(Produto *produto){
     return produto->volume;
 }
-Produto *produto_get_first(ListaProdutos *control){
-    return control->primeiro;
-}
-Produto *produto_get_last(ListaProdutos *control){
-    return control->ultimo;
-}
-Produto *produto_get_next(Produto *produto){
-    return produto->prox;
-}
 
 //UPDATE
 bool produto_aumentar_estoque(Produto *produto, int qtd){
     if (produto == NULL){
         return false;
     }
-    if (qtd <= 0 || qtd > (INT_MAX - produto->qtd)){
+    if (qtd <= 0 || produto->qtd > (INT_MAX - qtd)){
         return false;
     }
     produto->qtd += qtd;
     return true;
 }
 bool produto_descontar_estoque(Produto *produto, int qtd){
+    if (produto == NULL){
+        return false;
+    }
     if (qtd <= 0){
         return false;
     }

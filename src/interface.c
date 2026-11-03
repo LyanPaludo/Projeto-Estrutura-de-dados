@@ -17,7 +17,7 @@ void cadastrar_produto(ListaProdutos *control){
     while (1){
         printf(WHITE "Digite o nome do produto que desejas cadastrar: " RESET);
         if (!ler_string(nome, 100)){
-            printf(RED BOLD "\nErro ao ler string, retornando...\n" RESET);
+            printf(RED BOLD "\nEntrada inválida, retornando...\n" RESET);
             pausar();
             return;
         }
@@ -42,7 +42,7 @@ void cadastrar_produto(ListaProdutos *control){
             pausar();
             return;
         }else if (res == 0){
-            printf(RED BOLD "\nErro: scanf da qtd\n" RESET);
+            printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
             pausar();
             continue;
         }
@@ -59,22 +59,22 @@ void cadastrar_produto(ListaProdutos *control){
         printf(RED "\nO produto foi encontrado no depósito!\n" RESET);
         imprimir_produto(produto);
         printf(RED BOLD "\nA quantidade será aumentada e o volume antigo será mantido!\n" RESET);
-        pausar();
         if (!produto_aumentar_estoque(produto, qtd)){
-            printf(RED BOLD "\nErro: entrada inválida da quantidade detectada.\n" RESET);
+            printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
         }
+        pausar();
         return;
     }
 
     while (1){//volume
-        printf(WHITE BOLD "\nDigite o volume que o produto ocupa: " RESET);
+        printf(WHITE BOLD "\nDigite o volume que o produto ocupa (%d - %d): " RESET, PRODUTO_VOLUME_MIN, PRODUTO_VOLUME_MAX);
         res = ler_int(&volume);
         if (res == EOF){
             printf("\nFim de arquivo atingido (EOF)\n");
             pausar();
             return;
         }else if (res == 0){
-            printf(RED BOLD "\nErro: scanf do volume\n" RESET);
+            printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
             pausar();
             continue;
         }
@@ -88,7 +88,7 @@ void cadastrar_produto(ListaProdutos *control){
 
     produto = produto_cadastrar_estoque(nome, qtd, volume, control);
     if (produto == NULL){
-        printf(RED BOLD "\nErro: Cadastro do produto (produto_cadastrar_estoque)\n" RESET);
+        printf(RED BOLD "\nErro: Cadastro do produto\n" RESET);
         pausar();
         return;
     }
@@ -99,7 +99,7 @@ void cadastrar_produto(ListaProdutos *control){
 }
 
 void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
-    if (estoque == NULL || produto_get_first(estoque) == NULL){
+    if (lista_produtos_vazia(estoque)){
         printf(RED "\nNão há produtos cadastrados no estoque, impossível prosseguir com o cadastro do pedido.\n" RESET);
         pausar();
         return;
@@ -112,7 +112,7 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
     while (1){
         printf(WHITE BOLD "\nInforme o destino do pedido: " RESET);
         if (!ler_string(destino, DESTINO_TAM)){
-            printf(RED BOLD "\nErro ao ler string, retornando...\n" RESET);
+            printf(RED BOLD "\nEntrada inválida, retornando...\n" RESET);
             pausar();
             return;
         }
@@ -130,7 +130,7 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
     }
     Pedido *pedido = pedido_criar(destino);
     if (pedido == NULL){
-        printf(RED BOLD "\nErro: falha na alocação\n" RESET);
+        printf(RED BOLD "\nErro interno, retornando...\n" RESET);
         pausar();
         return;
     }
@@ -145,7 +145,7 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
                 pausar();
                 return;
             }else if (res == 0){
-                printf(RED BOLD "\nErro: scanf do código do produto\n" RESET);
+                printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
                 pausar();
                 continue;
             }
@@ -177,7 +177,7 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
                 pausar();
                 return;
             }else if (res == 0){
-                printf(RED BOLD "\nErro: scanf da qtd do produto\n" RESET);
+                printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
                 pausar();
                 continue;
             }
@@ -211,7 +211,7 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
                 pausar();
                 return;
             }else if (res == 0){
-                printf(RED BOLD "\nErro: scanf da opção\n" RESET);
+                printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
                 pausar();
                 continue;
             }
@@ -219,7 +219,7 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
                 break;
             }else if (op == 2){
                 if (!fila_enfileirar(fila_pedidos, pedido)){
-                    printf(RED BOLD "\nErro: enfileiramento do pedido\n" RESET);
+                    printf(RED BOLD "\nErro interno: enfileiramento do pedido\n" RESET);
                     pedido_liberar(pedido);
                     pausar();
                     return;
@@ -253,7 +253,7 @@ void separar_pedido(Fila *pedidos, Fila *pacotes){
         return;
     }
     if (r == SEPARACAO_ERRO){
-        printf(RED BOLD "\nErro: separação do pedido\n" RESET);
+        printf(RED BOLD "\nErro interno: separação do pedido\n" RESET);
         return;
     }
     imprimir_pedido(separado);

@@ -1,5 +1,6 @@
 #include "display.h"
 #include "cores.h"
+#include "constantes.h"
 #include <stdio.h>
 #include <inttypes.h>
 
@@ -16,17 +17,13 @@ void imprimir_produto(Produto *produto){
     printf(RESET WHITE BOLD "-----------------------------\n"RESET);
 }//imprimir um produto
 
-void imprimir_lista_produtos(ListaProdutos *control){
-    if (control == NULL || produto_get_first(control) == NULL){
+void imprimir_lista_produtos(ListaProdutos *estoque){
+    if (lista_produtos_vazia(estoque)){
         printf(RED BOLD "\nLISTA VAZIA!\n" RESET);
         return;
     }
-    Produto *atual = produto_get_first(control);
     printf(RESET RED BOLD ULINED   "Super imprimidor de produto:\n");
-    while (atual != NULL){
-        imprimir_produto(atual);
-        atual = produto_get_next(atual);
-    }
+    lista_produtos_percorrer(estoque, imprimir_produto);
     printf(RESET RED BOLD ULINED  "End\n"RESET);
 }//imprimir toda uma lista de produtos
 
@@ -77,7 +74,7 @@ void imprimir_pacote(Pacote *pacote){
     printf(WHITE BOLD "\n - PACOTE - \n" RESET);
     printf(GREEN "\nCod. pacote: " RESET WHITE "%s" RESET, pacote_get_codigo(pacote));
     printf(GREEN "\nDest. pacote: " RESET WHITE "%s" RESET, pacote_get_destino(pacote));
-    printf(GREEN "\nVol. pacote: " RESET WHITE "%d" RESET, pacote_get_volume(pacote));
+    printf(GREEN "\nVol. pacote: " RESET WHITE "[ %d / %d ]" RESET, pacote_get_volume(pacote), PACOTE_CAPACIDADE);
     printf(GREEN "\nQtd. unidades: " RESET WHITE "%d" RESET, pacote_get_qtd(pacote));
     pacote_percorrer(pacote, imprimir_item_pacote);
     printf("\n");
@@ -92,7 +89,7 @@ void imprimir_fila_pacotes(Fila *pacotes){
         printf(RED "\n--A Fila está vazia!--\n" RESET);
         return;
     }
-    printf(RED ULINED "\n--Super imprimidor de pacotes--\n" RESET);
+    printf(RED ULINED "\n--Super imprimidor de pacotes (do topo à base)--\n" RESET);
     fila_percorrer(pacotes, visitar_pacote);
     printf(RED ULINED "\n--Fim da Impressão--\n" RESET);
 }

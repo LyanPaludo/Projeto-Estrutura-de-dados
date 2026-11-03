@@ -44,11 +44,17 @@ PedidoItem *pedido_item_cadastrar(Pedido *pedido, Produto *produto, int qtd){
     if (produto == NULL){
         return NULL;
     }
+    if (pedido == NULL){
+        return NULL;
+    }
     if (qtd <= 0){
         return NULL;
     }
     PedidoItem *item = pedido_item_search(pedido, produto);
     if (item != NULL){
+        if (item->qtd > INT_MAX - qtd){
+            return NULL;
+        }
         item->qtd += qtd;
         return item;
     }
@@ -71,6 +77,9 @@ PedidoItem *pedido_item_cadastrar(Pedido *pedido, Produto *produto, int qtd){
 
 //CREATE
 Pedido *pedido_criar(const char *destino){
+    if (destino == NULL){
+        return NULL;
+    }
     Pedido *pedido = (Pedido *) malloc(sizeof(Pedido));
     if (pedido == NULL){
         return NULL;
@@ -92,6 +101,9 @@ Pedido *pedido_criar(const char *destino){
 
 //READ
 PedidoItem *pedido_item_search(Pedido *pedido, Produto *produto){
+    if (pedido == NULL || produto == NULL){
+        return NULL;
+    }
     PedidoItem *atual = pedido->primeiro;
     while (atual != NULL){
         if (atual->produto == produto){
