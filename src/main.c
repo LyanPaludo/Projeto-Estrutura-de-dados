@@ -88,6 +88,10 @@ int main(void){
                 imprimir_fila_pacotes(fila_pacotes);
                 pausar();
                 break;
+            case 67: 
+                secret_function(estoque, fila_pedidos); 
+                pausar();
+                break;
             case 0:
                 printf("Encerrando...\n");
                 break;

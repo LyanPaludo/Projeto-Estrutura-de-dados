@@ -9,6 +9,19 @@
 #include <string.h>
 #include <stdio.h>
 
+static const char *const NOMES_PC[] = {
+        "PC-1",
+        "PC-2",
+        "PC-3",
+        "PC-4",
+        "PC-5",
+        "PC-6",
+        "PC-7",
+        "PC-8",
+        "PC-9",
+        "PC-10"
+    };
+
 void cadastrar_produto(ListaProdutos *control){
     char nome[100];
     int qtd;
@@ -260,4 +273,98 @@ void separar_pedido(Fila *pedidos, Fila *pacotes){
     printf(GREEN "\nForam gerados " RESET WHITE "%d" RESET GREEN " novos pacotes!\n" RESET, (fila_tamanho(pacotes) - antes));
     pedido_liberar(separado);
     return;
+}
+
+static bool secret_importOfChina(ListaProdutos *estoque){
+    int tamanho = sizeof(NOMES_PC) / sizeof(NOMES_PC[0]);
+    for (int i = 0; i < tamanho; i++) {
+        Produto *produto = produto_search_name(NOMES_PC[i], estoque);
+        if (produto != NULL){
+            if (!produto_aumentar_estoque(produto, 10)){
+                return false;
+            }
+        }else{
+            produto = produto_cadastrar_estoque(NOMES_PC[i], 10, i+1, estoque);
+            if (produto == NULL){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+static int secret_ordersFlood(Fila *pedidos, ListaProdutos *estoque){
+    int tamanho = sizeof(NOMES_PC) / sizeof(NOMES_PC[0]);
+    int j=0;
+    for (int i = 0; i < tamanho; i++) {
+        Produto *produto = produto_search_name(NOMES_PC[i], estoque);
+        if (produto == NULL){
+            continue;
+        }
+        j++;
+        Pedido *pedido = pedido_criar("Brasil");
+        if (pedido == NULL){
+            printf(RED BOLD "\nErro: falta de memória\n" RESET);
+            pausar();
+            return j;
+        }
+        if (pedido_item_cadastrar(pedido, produto, 1+2*(i%6)) == NULL){
+            pedido_liberar(pedido);
+            printf(RED BOLD "\nErro: falta de memória\n" RESET);
+            pausar();
+            return j;
+        }
+        if (!fila_enfileirar(pedidos, pedido)){
+            pedido_liberar(pedido);
+            printf(RED BOLD "\nErro: cadastro do pedido\n" RESET);
+            pausar();
+            return j;
+        }
+    }
+    return j;
+}
+
+void secret_function(ListaProdutos *estoque, Fila *pedidos){
+    limpar_tela();
+    printf(RED BOLD "\n░░░░░░░░░░░░░░░░░░░░░░░░░░\n" RESET);
+
+    printf(GREEN    "\nFUNÇÃO SECRETA ENCONTRADA!\n" RESET);
+
+    printf(RED BOLD "\n░░░░░░░░░░░░░░░░░░░░░░░░░░\n" RESET);
+    printf(WHITE BOLD "\n--Você desbloqueou os privilégios da economia temporal!--\n" RESET);
+    while (1){
+        printf(WHITE "\n( 1 ) Importar produtos da china." RESET);
+        printf(WHITE "\n( 2 ) Enxurrada de pedidos experimentais." RESET);
+        printf(RED ULINED "\n( 0 ) Abster-se dos privilégios" RESET);
+        printf(GREEN "\n\n-> Escolha uma opção: " RESET);
+        int op = -1;
+        int res = ler_int(&op);
+        if (res == EOF){
+            printf("\nFim dos privilégios atingido (EOF)\n");
+            return;
+        }else if (res == 0){
+            printf(RED BOLD "\nOusas falsificar sua escolha?.\n" RESET);
+            pausar();
+            continue;
+        }
+        switch (op){
+            case 1:
+                if (!secret_importOfChina(estoque)){
+                    printf(RED BOLD "\nErro na importação\n" RESET);
+                    return;
+                }
+                printf(GREEN "\nProdutos 100%% confiáveis foram importados! Verifique o estoque.\n" RESET);
+                return;
+            case 2:
+                printf(GREEN "\nVocê recebeu uma enxurrada de %d pedidos! Rápido, verifique a fila de pedidos!\n" RESET, secret_ordersFlood(pedidos, estoque));
+                return;
+            case 0:
+                printf(RED "\nVocê absteve-se dos privilégios da economia temporal!\n" RESET);
+                return;
+            default:
+                printf(RED "\nOpção inválida\n" RESET); 
+                pausar();
+                break;
+        }
+    }
 }
