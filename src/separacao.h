@@ -2,6 +2,7 @@
 #define SEPARACAO_H
 #include "fila.h"
 #include "pedido.h"
+#include "fila_prioridade.h"
 
 typedef enum{
     SEPARACAO_OK,
@@ -10,6 +11,6 @@ typedef enum{
     SEPARACAO_ERRO
 }ResultadoSeparacao;
 
-ResultadoSeparacao separar_prox_pedido(Fila *pedidos, Fila *pacotes, Pedido **separado);
+ResultadoSeparacao separar_prox_pedido(Fila *pedidos, FilaPrioridade *pacotes, Pedido **separado);
 
 #endif

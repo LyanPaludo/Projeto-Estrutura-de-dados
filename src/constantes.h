@@ -6,4 +6,13 @@
 #define PRODUTO_VOLUME_MAX PACOTE_CAPACIDADE
 #define DESTINO_TAM 128
 
+
+typedef enum {
+    PRIORIDADE_EXPRESSA,
+    PRIORIDADE_RAPIDA,
+    PRIORIDADE_NORMAL,
+    PRIORIDADE_QTD
+}Prioridade;
+
+
 #endif

@@ -251,9 +251,9 @@ void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
     }
 }
 
-void separar_pedido(Fila *pedidos, Fila *pacotes){
+void separar_pedido(Fila *pedidos, FilaPrioridade *pacotes){
     Pedido *separado = NULL;
-    int antes = fila_tamanho(pacotes);
+    int antes = fila_prioridade_tamanho(pacotes);
     ResultadoSeparacao r = separar_prox_pedido(pedidos, pacotes, &separado);
     if (r == SEPARACAO_FILA_VAZIA){
         printf(RED "\nNão há pedidos!\n" RESET);
@@ -270,7 +270,7 @@ void separar_pedido(Fila *pedidos, Fila *pacotes){
         return;
     }
     imprimir_pedido(separado);
-    printf(GREEN "\nForam gerados " RESET WHITE "%d" RESET GREEN " novos pacotes!\n" RESET, (fila_tamanho(pacotes) - antes));
+    printf(GREEN "\nForam gerados " RESET WHITE "%d" RESET GREEN " novos pacotes!\n" RESET, (fila_prioridade_tamanho(pacotes) - antes));
     pedido_liberar(separado);
     return;
 }

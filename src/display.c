@@ -66,12 +66,26 @@ static void imprimir_item_pacote(Produto *produto){
     printf(GREEN "\n   -> Item: " RESET WHITE "%s" RESET, produto_get_name(produto));
 }
 
+static const char *nome_prioridade(int p){
+    switch (p){
+        case 0:
+            return "Expressa";
+        case 1:
+            return "Rápida";
+        case 2:
+            return "Normal";
+        default:
+            return "Desconhecida";
+    }
+}
+
 void imprimir_pacote(Pacote *pacote){
     if (pacote == NULL){
         printf(RED BOLD "\nPacote inexistente\n" RESET);
         return;
     }
     printf(WHITE BOLD "\n - PACOTE - \n" RESET);
+    printf(GREEN "\nPrioridade: " RESET WHITE ULINED "%s" RESET, nome_prioridade(pacote_get_prioridade(pacote)));
     printf(GREEN "\nCod. pacote: " RESET WHITE "%s" RESET, pacote_get_codigo(pacote));
     printf(GREEN "\nDest. pacote: " RESET WHITE "%s" RESET, pacote_get_destino(pacote));
     printf(GREEN "\nVol. pacote: " RESET WHITE "[ %d / %d ]" RESET, pacote_get_volume(pacote), PACOTE_CAPACIDADE);
@@ -84,12 +98,12 @@ static void visitar_pacote(void *dado){
     imprimir_pacote((Pacote *)dado);
 }
 
-void imprimir_fila_pacotes(Fila *pacotes){
-    if (fila_espiar_frente(pacotes) == NULL){
+void imprimir_fila_pacotes(FilaPrioridade *pacotes){
+    if (fila_prioridade_espiar_frente(pacotes) == NULL){
         printf(RED "\n--A Fila está vazia!--\n" RESET);
         return;
     }
-    printf(RED ULINED "\n--Super imprimidor de pacotes (do topo à base)--\n" RESET);
-    fila_percorrer(pacotes, visitar_pacote);
+    printf(RED ULINED "\n--Super imprimidor de pacotes (Ordem de expedição)--\n" RESET);
+    fila_prioridade_percorrer(pacotes, visitar_pacote);
     printf(RED ULINED "\n--Fim da Impressão--\n" RESET);
 }

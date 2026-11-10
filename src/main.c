@@ -8,6 +8,7 @@
 #include "fila.h"
 #include "separacao.h"
 #include "pacote.h"
+#include "fila_prioridade.h"
 
 #ifdef _WIN32
 #include <windows.h>  
@@ -25,6 +26,7 @@ int main(void){
         SetConsoleOutputCP(CP_UTF8);
         SetConsoleCP(CP_UTF8);
     #endif
+    iniciar_sorteio();
     int op = -1;
     int res;
     ListaProdutos *estoque = lista_produtos_criar();
@@ -38,7 +40,7 @@ int main(void){
         return EXIT_FAILURE;
     }
 
-    Fila *fila_pacotes = fila_criar();
+    FilaPrioridade *fila_pacotes = fila_prioridade_criar();
     if (fila_pacotes == NULL){
         lista_produtos_liberar(estoque);
         fila_liberar(fila_pedidos, liberar_pedido_void);
@@ -103,11 +105,10 @@ int main(void){
         }
     } while (op != 0);
 
-    fila_liberar(fila_pacotes, liberar_pacote_void);
+    fila_prioridade_liberar(fila_pacotes, liberar_pacote_void);
     fila_liberar(fila_pedidos, liberar_pedido_void);
     lista_produtos_liberar(estoque);
     return 0;
 }
 //Para compilar na versão atual: 
 //gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
-//OBS: NÃO APAGAR -> Mais pra frente utilizar EPOCH como parâmetro na lista de prioridades (Lá na parte 2) -> CANCELADO, falha em pedidos cadastrados no mesmo segundo, contador de chegada é melhor.

@@ -10,7 +10,7 @@ struct Pacote{
     char *codigo;
     char destino[DESTINO_TAM];
     Pilha *itens;
-
+    int prioridade;
 };
 
 static char *pacote_gerar_cod(const char *codigo_pedido, int n){
@@ -27,8 +27,11 @@ static char *pacote_gerar_cod(const char *codigo_pedido, int n){
 }
 
 //CREATE
-Pacote *pacote_criar(const char *codigo_pedido, int n, const char *destino){
+Pacote *pacote_criar(const char *codigo_pedido, int n, const char *destino, int prioridade){
     if (codigo_pedido == NULL || destino == NULL || n < 1){
+        return NULL;
+    }
+    if (prioridade < 0 || prioridade > PRIORIDADE_QTD-1){
         return NULL;
     }
     Pacote *pack = (Pacote *) malloc(sizeof(Pacote));
@@ -48,6 +51,7 @@ Pacote *pacote_criar(const char *codigo_pedido, int n, const char *destino){
     }
     strncpy(pack->destino, destino, DESTINO_TAM - 1);
     pack->destino[DESTINO_TAM - 1] = '\0';
+    pack->prioridade = prioridade;
     return pack;
 }
 
@@ -77,6 +81,10 @@ int pacote_get_volume(Pacote *pacote){
 
 int pacote_get_qtd(Pacote *pacote){
     return pilha_tamanho(pacote->itens);
+}
+
+int pacote_get_prioridade(Pacote *pacote){
+    return pacote->prioridade;
 }
 
 //UPDATE

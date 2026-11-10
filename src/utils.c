@@ -1,6 +1,8 @@
 #include "utils.h"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
+#include <stdlib.h>
 
 void limpar_buffer(void) {
     int c;
@@ -76,4 +78,15 @@ int ler_int(int *var){
     }
     limpar_buffer();
     return 1;
+}
+
+void iniciar_sorteio(void){
+    srand((unsigned) time(NULL));
+}
+
+int sortear(int n){
+    if (n <= 0){
+        return 0;
+    }
+    return rand() % n;
 }

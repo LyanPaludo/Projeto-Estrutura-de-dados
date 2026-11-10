@@ -2,6 +2,8 @@
 #include "separacao.h" 
 #include "pacote.h"
 #include <stdbool.h>
+#include "utils.h"
+#include "constantes.h"
 
 static bool estoque_suficiente(Pedido *pedido){
     if (pedido == NULL){
@@ -19,10 +21,10 @@ static bool estoque_suficiente(Pedido *pedido){
     return true;
 }//Verifica se tem estoque suficiente para atender todo o pedido
 
-static bool montar_pacotes(Pedido *pedido, Fila *pacotes){
+static bool montar_pacotes(Pedido *pedido, FilaPrioridade *pacotes, int prioridade){
     int n = 1;
     PedidoItem *item = pedido_item_get_first(pedido);
-    Pacote *pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido));
+    Pacote *pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido), prioridade);
     if (pack == NULL){
         return false;
     }
@@ -38,12 +40,12 @@ static bool montar_pacotes(Pedido *pedido, Fila *pacotes){
                     pacote_liberar(pack);
                     return false;
                 }
-                if (!fila_enfileirar(pacotes, pack)){
+                if (!fila_prioridade_enfileirar(pacotes, pack, prioridade)){
                     pacote_liberar(pack);
                     return false;
                 }
                 n++;
-                pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido));
+                pack = pacote_criar(pedido_get_code(pedido), n, pedido_get_destino(pedido), prioridade);
                 if (pack == NULL){
                     return false;
                 }
@@ -55,14 +57,14 @@ static bool montar_pacotes(Pedido *pedido, Fila *pacotes){
         }
         item = pedido_item_get_next(item);
     }
-    if (!fila_enfileirar(pacotes, pack)){
+    if (!fila_prioridade_enfileirar(pacotes, pack, prioridade)){
         pacote_liberar(pack);
         return false;
     }
     return true;
 }
 
-ResultadoSeparacao separar_prox_pedido(Fila *pedidos, Fila *pacotes, Pedido **separado){
+ResultadoSeparacao separar_prox_pedido(Fila *pedidos, FilaPrioridade *pacotes, Pedido **separado){
     *separado = NULL;
     Pedido *pedido = fila_espiar_frente(pedidos);
     if (pedido == NULL){
@@ -80,7 +82,8 @@ ResultadoSeparacao separar_prox_pedido(Fila *pedidos, Fila *pacotes, Pedido **se
         }
         item = pedido_item_get_next(item);
     }
-    if (!montar_pacotes(pedido, pacotes)){
+    int prioridade = sortear(PRIORIDADE_QTD);
+    if (!montar_pacotes(pedido, pacotes, prioridade)){
         pedido_liberar(pedido);
         return SEPARACAO_ERRO;
     }
