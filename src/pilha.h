@@ -1,6 +1,6 @@
 #ifndef PILHA_H
 #define PILHA_H
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include <stdbool.h>
 
 typedef struct Pilha Pilha;

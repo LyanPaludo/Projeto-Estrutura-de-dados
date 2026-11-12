@@ -17,13 +17,13 @@ void imprimir_produto(Produto *produto){
     printf(RESET WHITE BOLD "-----------------------------\n"RESET);
 }//imprimir um produto
 
-void imprimir_lista_produtos(ListaProdutos *estoque){
-    if (lista_produtos_vazia(estoque)){
+void imprimir_catalogo(Catalogo *estoque){
+    if (catalogo_vazio(estoque)){
         printf(RED BOLD "\nLISTA VAZIA!\n" RESET);
         return;
     }
     printf(RESET RED BOLD ULINED   "Super imprimidor de produto:\n");
-    lista_produtos_percorrer(estoque, imprimir_produto);
+    catalogo_percorrer(estoque, imprimir_produto);
     printf(RESET RED BOLD ULINED  "End\n"RESET);
 }//imprimir toda uma lista de produtos
 

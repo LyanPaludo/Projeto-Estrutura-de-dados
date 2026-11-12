@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include "utils.h"
 #include "display.h"
 #include "interface.h"
@@ -30,27 +30,27 @@ int main(void){
     iniciar_sorteio();
     int op = -1;
     int res;
-    ListaProdutos *estoque = lista_produtos_criar();
+    Catalogo *estoque = catalogo_criar();
     if (estoque == NULL){
         return EXIT_FAILURE;
     }
 
     Fila *fila_pedidos = fila_criar();
     if (fila_pedidos == NULL){
-        lista_produtos_liberar(estoque);
+        catalogo_liberar(estoque);
         return EXIT_FAILURE;
     }
 
     FilaPrioridade *fila_pacotes = fila_prioridade_criar();
     if (fila_pacotes == NULL){
-        lista_produtos_liberar(estoque);
+        catalogo_liberar(estoque);
         fila_liberar(fila_pedidos, liberar_pedido_void);
         return EXIT_FAILURE;
     }
 
     Expedicao *exp = expedicao_criar();
     if (exp == NULL){
-        lista_produtos_liberar(estoque);
+        catalogo_liberar(estoque);
         fila_liberar(fila_pedidos, liberar_pedido_void);
         fila_prioridade_liberar(fila_pacotes, liberar_pacote_void);
         return EXIT_FAILURE;
@@ -87,7 +87,7 @@ int main(void){
                 cadastrar_pedido(fila_pedidos, estoque);
                 break;
             case 3:
-                imprimir_lista_produtos(estoque);
+                imprimir_catalogo(estoque);
                 pausar();
                 break;
             case 4:
@@ -132,8 +132,8 @@ int main(void){
     expedicao_liberar(exp);
     fila_prioridade_liberar(fila_pacotes, liberar_pacote_void);
     fila_liberar(fila_pedidos, liberar_pedido_void);
-    lista_produtos_liberar(estoque);
+    catalogo_liberar(estoque);
     return 0;
 }
 //Para compilar na versão atual: 
-//gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
+//gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/catalogo.c src/interface.c src/display.c src/pedido.c src/fila.c src/fila_prioridade.c src/pilha.c src/pacote.c src/separacao.c src/caminhao.c src/expedicao.c -o programa.exe

@@ -1,5 +1,5 @@
 #include "interface.h"
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include "pedido.h"
 #include "utils.h"
 #include "display.h"
@@ -22,7 +22,7 @@ static const char *const NOMES_PC[] = {
         "PC-10"
     };
 
-void cadastrar_produto(ListaProdutos *control){
+void cadastrar_produto(Catalogo *control){
     char nome[100];
     int qtd;
     int volume;
@@ -111,8 +111,8 @@ void cadastrar_produto(ListaProdutos *control){
     return;
 }
 
-void cadastrar_pedido(Fila *fila_pedidos, ListaProdutos *estoque){
-    if (lista_produtos_vazia(estoque)){
+void cadastrar_pedido(Fila *fila_pedidos, Catalogo *estoque){
+    if (catalogo_vazio(estoque)){
         printf(RED "\nNão há produtos cadastrados no estoque, impossível prosseguir com o cadastro do pedido.\n" RESET);
         pausar();
         return;
@@ -280,7 +280,6 @@ void expedir_pacotes(Expedicao *exp, FilaPrioridade *pacotes){
     int saidos_antes  = expedicao_historico_tamanho(exp);
     if (pacotes_antes == 0){
         printf(RED "\nNão há pacotes prontos!\n" RESET);
-        pausar();
         return;
     }
     if (!expedicao_expedir(exp, pacotes)){
@@ -293,7 +292,7 @@ void expedir_pacotes(Expedicao *exp, FilaPrioridade *pacotes){
 
 //secret
 
-static bool secret_importOfChina(ListaProdutos *estoque){
+static bool secret_importOfChina(Catalogo *estoque){
     int tamanho = sizeof(NOMES_PC) / sizeof(NOMES_PC[0]);
     for (int i = 0; i < tamanho; i++) {
         Produto *produto = produto_search_name(NOMES_PC[i], estoque);
@@ -311,7 +310,7 @@ static bool secret_importOfChina(ListaProdutos *estoque){
     return true;
 }
 
-static int secret_ordersFlood(Fila *pedidos, ListaProdutos *estoque){
+static int secret_ordersFlood(Fila *pedidos, Catalogo *estoque){
     int tamanho = sizeof(NOMES_PC) / sizeof(NOMES_PC[0]);
     int j=0;
     for (int i = 0; i < tamanho; i++) {
@@ -342,7 +341,7 @@ static int secret_ordersFlood(Fila *pedidos, ListaProdutos *estoque){
     return j;
 }
 
-void secret_function(ListaProdutos *estoque, Fila *pedidos){
+void secret_function(Catalogo *estoque, Fila *pedidos){
     limpar_tela();
     printf(RED BOLD "\n░░░░░░░░░░░░░░░░░░░░░░░░░░\n" RESET);
 

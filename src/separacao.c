@@ -1,4 +1,4 @@
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include "separacao.h" 
 #include "pacote.h"
 #include <stdbool.h>

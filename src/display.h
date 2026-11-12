@@ -1,6 +1,6 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include "pedido.h"
 #include "fila.h"
 #include "pacote.h"
@@ -10,7 +10,7 @@
 
 void imprimir_produto(Produto *produto);              //Função para imprimir um único produto do estoque
 
-void imprimir_lista_produtos(ListaProdutos *control); //Função para imprimir todo o estoque
+void imprimir_catalogo(Catalogo *control); //Função para imprimir todo o estoque
 
 void imprimir_pedido(Pedido *pedido);                 //Função para imprimir um único pedido
 

@@ -1,6 +1,6 @@
 #ifndef PEDIDO_H
 #define PEDIDO_H
-#include "lista_produtos.h"
+#include "catalogo.h"
 
 typedef struct PedidoItem PedidoItem;
 

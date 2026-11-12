@@ -1,6 +1,6 @@
 #ifndef PACOTE_H
 #define PACOTE_H
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include "constantes.h"
 
 typedef struct Pacote Pacote;

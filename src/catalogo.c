@@ -1,4 +1,4 @@
-#include "lista_produtos.h"
+#include "catalogo.h"
 #include "utils.h"
 #include "constantes.h"
 #include <stdlib.h>
@@ -14,7 +14,7 @@ struct Produto{
     struct Produto *prox;   //Próximo produto na lista
 };
 
-struct ListaProdutos{
+struct Catalogo{
     int prod_total;     //Quantidade de produtos diferentes
     Produto *primeiro;
     Produto *ultimo;
@@ -26,7 +26,7 @@ static uint64_t produto_gerar_cod(void) {
     return contador_cod++;
 }
 //INSERT
-static void produto_inserir(ListaProdutos *control, Produto *produto){
+static void produto_inserir(Catalogo *control, Produto *produto){
     if (control->primeiro == NULL){
         control->primeiro       = produto;
         control->ultimo         = produto;
@@ -38,7 +38,7 @@ static void produto_inserir(ListaProdutos *control, Produto *produto){
     control->prod_total += 1;
 }
 
-Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaProdutos *control){
+Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, Catalogo *control){
     if (nome == NULL || control == NULL || qtd <= 0 || volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
         return NULL;
     }
@@ -61,8 +61,8 @@ Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, ListaP
 }
 
 //CREATE
-ListaProdutos *lista_produtos_criar(void){
-    ListaProdutos *control  = (ListaProdutos *) malloc(sizeof(ListaProdutos));
+Catalogo *catalogo_criar(void){
+    Catalogo *control  = (Catalogo *) malloc(sizeof(Catalogo));
     if (control == NULL){
         return NULL;
     }
@@ -74,8 +74,8 @@ ListaProdutos *lista_produtos_criar(void){
 }
 
 //READ
-void lista_produtos_percorrer(ListaProdutos *estoque, void (*visitar)(Produto *p)){
-    if (lista_produtos_vazia(estoque)){
+void catalogo_percorrer(Catalogo *estoque, void (*visitar)(Produto *p)){
+    if (catalogo_vazio(estoque)){
         return;
     }
     Produto *atual = estoque->primeiro;
@@ -85,14 +85,14 @@ void lista_produtos_percorrer(ListaProdutos *estoque, void (*visitar)(Produto *p
     }
 }
 
-bool lista_produtos_vazia(ListaProdutos *estoque){
+bool catalogo_vazio(Catalogo *estoque){
     if (estoque == NULL || estoque->primeiro == NULL){
         return true;
     }
     return false;
 }
 
-Produto *produto_search_name(const char *nome, ListaProdutos *control){
+Produto *produto_search_name(const char *nome, Catalogo *control){
     Produto *atual = control->primeiro;
     while (atual != NULL){
         if (comparar_sem_case(nome, atual->nome)==0){
@@ -102,7 +102,7 @@ Produto *produto_search_name(const char *nome, ListaProdutos *control){
     }
     return NULL;
 }
-Produto *produto_search_code(uint64_t codigo, ListaProdutos *control){
+Produto *produto_search_code(uint64_t codigo, Catalogo *control){
     Produto *atual = control->primeiro;
     while (atual != NULL){
         if (atual->codigo == codigo){
@@ -155,7 +155,7 @@ static void produto_liberar(Produto *produto){
     free(produto->nome);
     free(produto);
 }
-void lista_produtos_liberar(ListaProdutos *control){
+void catalogo_liberar(Catalogo *control){
     Produto *atual = control->primeiro;
     while (atual!=NULL){
         Produto *prox = atual->prox;

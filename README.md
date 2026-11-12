@@ -12,7 +12,7 @@ Projeto desenvolvido na disciplina de Estrutura de Dados e Programação (2º se
 
 ## Estruturas de dados utilizadas
 
-**Lista encadeada**: Armazenar os produtos, perfeita para adicionar um novo produto à lista e remover, caso necessário, facilitando a manipulação da lista. Utilizada em lista_produtos e pedido.
+**Lista encadeada**: Armazenar os produtos, perfeita para adicionar um novo produto à lista e remover, caso necessário, facilitando a manipulação da lista. Utilizada em catalogo e pedido.
 
 **Fila**: Uma lista encadeada onde é sempre o primeiro elemento quem é removido e os elementos são adicionados ao final (FIRST IN FIRST OUT). Utilizada para listar os pedidos em ordem de cadastro. *OBS*: *Utilizado ponteiro genérico void *, já que a fila também será usada para as caixas e para evitar repetição de código.*
 
@@ -34,7 +34,7 @@ No momento:
 
 **interface.c/.h** -> Armazena as funções de interação com o usuário.
 
-**lista_produtos.c/.h** -> TAD que armazena as funções relacionadas aos produtos e à lista de produtos.
+**catalogo.c/.h** -> TAD que armazena as funções relacionadas aos produtos e à lista de produtos.
 
 **pedido.c/.h** -> TAD que armazena as funções relacionadas aos pedidos.
 
@@ -57,14 +57,14 @@ Ter GCC (minGW) ou MSVC instalado, para compilar e executar (na pasta raíz):
 Compilar para DEBUG:
 
 ```plaintext
-gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
+gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/catalogo.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
 ./programa
 ```
 
 Compilar para RELEASE:
 
 ```plaintext
-gcc src/main.c src/utils.c src/lista_produtos.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
+gcc src/main.c src/utils.c src/catalogo.c src/interface.c src/display.c src/pedido.c src/fila.c src/pilha.c src/pacote.c src/separacao.c -o programa.exe
 ./programa
 ```
 
