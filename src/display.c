@@ -68,11 +68,11 @@ static void imprimir_item_pacote(Produto *produto){
 
 static const char *nome_prioridade(int p){
     switch (p){
-        case 0:
+        case PRIORIDADE_EXPRESSA:
             return "Expressa";
-        case 1:
+        case PRIORIDADE_RAPIDA:
             return "Rápida";
-        case 2:
+        case PRIORIDADE_NORMAL:
             return "Normal";
         default:
             return "Desconhecida";
@@ -106,4 +106,49 @@ void imprimir_fila_pacotes(FilaPrioridade *pacotes){
     printf(RED ULINED "\n--Super imprimidor de pacotes (Ordem de expedição)--\n" RESET);
     fila_prioridade_percorrer(pacotes, visitar_pacote);
     printf(RED ULINED "\n--Fim da Impressão--\n" RESET);
+}
+
+static void visitar_pacote_resumo(void *dado){
+    Pacote *pacote = (Pacote *)dado;
+    printf(WHITE BOLD "\n-> PACOTE:" RESET);
+    printf(GREEN "\n     Prioridade: " RESET WHITE ULINED "%s" RESET, nome_prioridade(pacote_get_prioridade(pacote)));
+    printf(GREEN "\n     Cod. pacote: " RESET WHITE "%s" RESET, pacote_get_codigo(pacote));
+    printf(GREEN "\n     Dest. pacote: " RESET WHITE "%s" RESET, pacote_get_destino(pacote));
+    printf(GREEN "\n     Vol. pacote: " RESET WHITE "[ %d / %d ]" RESET, pacote_get_volume(pacote), PACOTE_CAPACIDADE);
+}
+
+void imprimir_caminhao(Caminhao *cmn){
+    if (cmn == NULL){
+        printf(RED "\nCaminhão inexistente!\n" RESET);
+        return;
+    }
+    printf(GREEN BOLD "\n--CAMINHÃO--\n" RESET);
+    printf(GREEN "\nNúmero: " RESET WHITE "%d" RESET, caminhao_get_numero(cmn));
+    printf(GREEN "\nCapacidade: " RESET WHITE "[ %d / %d ]" RESET, caminhao_get_usado(cmn), caminhao_get_capacidade(cmn));
+    printf(GREEN "\nQtd. Pacotes: " RESET WHITE "%d" RESET, caminhao_get_qtd(cmn));
+    caminhao_percorrer(cmn, visitar_pacote_resumo);
+    printf("\n");
+}
+
+void imprimir_docas(Expedicao *exp){
+    printf(RED ULINED "\n--Imprimidor de docas--\n" RESET);
+    for (int i=0; i<NUM_DOCAS; i++){
+        printf(GREEN BOLD "\nDoca %d" RESET, i+1);
+        imprimir_caminhao(expedicao_get_doca(exp, i));
+    }
+    printf(RED ULINED "\n--Fim do imprimidor de docas--\n" RESET);
+}
+
+static void visitar_caminhao(void *dado){
+    imprimir_caminhao((Caminhao *)dado);
+}
+
+void imprimir_historico(Expedicao *exp){
+    if (exp == NULL || expedicao_historico_tamanho(exp) == 0){
+        printf(RED "\nNenhum caminhão saiu!\n" RESET);
+        return;
+    }
+    printf(RED ULINED "--Super imprimidor de histórico--" RESET);
+    expedicao_percorrer_historico(exp, visitar_caminhao);
+    printf(RED ULINED "\n--Fim do Imprimidor de Históricos--\n" RESET);
 }

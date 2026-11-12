@@ -275,6 +275,24 @@ void separar_pedido(Fila *pedidos, FilaPrioridade *pacotes){
     return;
 }
 
+void expedir_pacotes(Expedicao *exp, FilaPrioridade *pacotes){
+    int pacotes_antes = fila_prioridade_tamanho(pacotes);
+    int saidos_antes  = expedicao_historico_tamanho(exp);
+    if (pacotes_antes == 0){
+        printf(RED "\nNão há pacotes prontos!\n" RESET);
+        pausar();
+        return;
+    }
+    if (!expedicao_expedir(exp, pacotes)){
+        printf(RED BOLD "\nErro: Não foi possível expedir os pacotes.\n" RESET);
+        return;
+    }
+    printf(GREEN "\nForam expedidos com sucesso " RESET WHITE "%d" RESET GREEN " pacotes!\n", pacotes_antes);
+    printf(RED "\n-> %d " RESET WHITE "caminhões deixaram as docas!" RESET RED " <-\n" RESET, expedicao_historico_tamanho(exp) - saidos_antes);
+}
+
+//secret
+
 static bool secret_importOfChina(ListaProdutos *estoque){
     int tamanho = sizeof(NOMES_PC) / sizeof(NOMES_PC[0]);
     for (int i = 0; i < tamanho; i++) {

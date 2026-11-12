@@ -5,7 +5,10 @@
 #define PRODUTO_VOLUME_MIN 1
 #define PRODUTO_VOLUME_MAX PACOTE_CAPACIDADE
 #define DESTINO_TAM 128
-
+#define NUM_DOCAS 5
+#define CAMINHAO_CAP_PEQUENO 30
+#define CAMINHAO_CAP_MEDIO 50
+#define CAMINHAO_CAP_GRANDE 80
 
 typedef enum {
     PRIORIDADE_EXPRESSA,
@@ -13,6 +16,7 @@ typedef enum {
     PRIORIDADE_NORMAL,
     PRIORIDADE_QTD
 }Prioridade;
+
 
 
 #endif

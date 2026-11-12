@@ -9,6 +9,7 @@
 #include "separacao.h"
 #include "pacote.h"
 #include "fila_prioridade.h"
+#include "expedicao.h"
 
 #ifdef _WIN32
 #include <windows.h>  
@@ -47,6 +48,14 @@ int main(void){
         return EXIT_FAILURE;
     }
 
+    Expedicao *exp = expedicao_criar();
+    if (exp == NULL){
+        lista_produtos_liberar(estoque);
+        fila_liberar(fila_pedidos, liberar_pedido_void);
+        fila_prioridade_liberar(fila_pacotes, liberar_pacote_void);
+        return EXIT_FAILURE;
+    }
+
     do {
         printf("=== VENDA CERTA ===\n\n");
         printf("1. Cadastrar Produto\n");
@@ -55,6 +64,9 @@ int main(void){
         printf("4. Ver fila de pedidos\n");
         printf("5. Separar próximo pedido\n");
         printf("6. Ver pacotes prontos\n");
+        printf("7. Expedir pacotes\n");
+        printf("8. Ver docas\n");
+        printf("9. Ver caminhões despachados\n");
         printf("0. Encerrar\n\n");
 
         printf("Informe sua opção: ");
@@ -90,6 +102,18 @@ int main(void){
                 imprimir_fila_pacotes(fila_pacotes);
                 pausar();
                 break;
+            case 7:
+                expedir_pacotes(exp, fila_pacotes);
+                pausar();
+                break;
+            case 8:
+                imprimir_docas(exp);
+                pausar();
+                break;
+            case 9:
+                imprimir_historico(exp);
+                pausar();
+                break;
             case 67: 
                 secret_function(estoque, fila_pedidos); 
                 pausar();
@@ -105,6 +129,7 @@ int main(void){
         }
     } while (op != 0);
 
+    expedicao_liberar(exp);
     fila_prioridade_liberar(fila_pacotes, liberar_pacote_void);
     fila_liberar(fila_pedidos, liberar_pedido_void);
     lista_produtos_liberar(estoque);
