@@ -9,7 +9,7 @@ void cadastrar_produto(Catalogo *control);
 void cadastrar_pedido(Fila *fila_pedidos, Catalogo *estoque);
 void separar_pedido(Fila *pedidos, FilaPrioridade *pacotes);
 void expedir_pacotes(Expedicao *exp, FilaPrioridade *pacotes);
-
+void remover_produto(Catalogo *estoque);
 //secret
-void secret_function(Catalogo *estoque, Fila *pedidos);
+void secret_function(Catalogo *estoque, Fila *pedidos, FilaPrioridade *pacotes);
 #endif

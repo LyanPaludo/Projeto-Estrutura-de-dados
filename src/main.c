@@ -10,6 +10,7 @@
 #include "pacote.h"
 #include "fila_prioridade.h"
 #include "expedicao.h"
+#include "cores.h"
 
 #ifdef _WIN32
 #include <windows.h>  
@@ -57,25 +58,26 @@ int main(void){
     }
 
     do {
-        printf("=== VENDA CERTA ===\n\n");
-        printf("1. Cadastrar Produto\n");
-        printf("2. Cadastrar Pedido\n");
-        printf("3. Listar produtos\n");
-        printf("4. Ver fila de pedidos\n");
-        printf("5. Separar próximo pedido\n");
-        printf("6. Ver pacotes prontos\n");
-        printf("7. Expedir pacotes\n");
-        printf("8. Ver docas\n");
-        printf("9. Ver caminhões despachados\n");
-        printf("0. Encerrar\n\n");
+        printf(GREEN BOLD "=== VENDA CERTA ===\n\n" RESET);
+        printf(WHITE BOLD "1. Cadastrar Produto\n" RESET);
+        printf(WHITE BOLD "2. Cadastrar Pedido\n" RESET);
+        printf(WHITE BOLD "3. Listar produtos\n" RESET);
+        printf(WHITE BOLD "4. Ver fila de pedidos\n" RESET);
+        printf(WHITE BOLD "5. Separar próximo pedido\n" RESET);
+        printf(WHITE BOLD "6. Ver pacotes prontos\n" RESET);
+        printf(WHITE BOLD "7. Expedir pacotes\n" RESET);
+        printf(WHITE BOLD "8. Ver docas\n" RESET);
+        printf(WHITE BOLD "9. Ver caminhões despachados\n" RESET);
+        printf(WHITE BOLD "10. Remover produto\n" RESET);
+        printf(RED "0. Encerrar\n\n" RESET);
 
         printf("Informe sua opção: ");
         res = ler_int(&op);
         if (res == EOF){
-            printf("\nFim de arquivo atingido (EOF)\n");
+            printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
             break;
         }else if (res == 0){
-            printf("\nValor inválido\n");
+            printf(RED "\nValor inválido\n" RESET);
             pausar();
             continue;
         }
@@ -114,16 +116,20 @@ int main(void){
                 imprimir_historico(exp);
                 pausar();
                 break;
+            case 10:
+                remover_produto(estoque);
+                pausar();
+                break;
             case 67: 
-                secret_function(estoque, fila_pedidos); 
+                secret_function(estoque, fila_pedidos, fila_pacotes); 
                 pausar();
                 break;
             case 0:
-                printf("Encerrando...\n");
+                printf(RED "Encerrando...\n" RESET);
                 break;
 
             default:
-                printf("Opção inválida!\n");
+                printf(RED "Opção inválida!\n" RESET);
                 pausar();
                 break;
         }
@@ -137,3 +143,4 @@ int main(void){
 }
 //Para compilar na versão atual: 
 //gcc -Wall -Wextra -std=c99 -pedantic -g src/main.c src/utils.c src/catalogo.c src/interface.c src/display.c src/pedido.c src/fila.c src/fila_prioridade.c src/pilha.c src/pacote.c src/separacao.c src/caminhao.c src/expedicao.c -o programa.exe
+//Opção oculta de testes: 67

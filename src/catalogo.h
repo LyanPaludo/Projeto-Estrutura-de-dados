@@ -31,6 +31,7 @@ bool produto_descontar_estoque(Produto *produto, int qtd);//Descontar do estoque
 
 //DELETE
 void catalogo_liberar(Catalogo *control);
+bool catalogo_remover(Catalogo *control, uint64_t codigo);
 
 
 #endif 

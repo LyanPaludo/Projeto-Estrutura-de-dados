@@ -51,7 +51,7 @@ void cadastrar_produto(Catalogo *control){
         printf(WHITE BOLD "\nDigite a quantidade (>= 1): " RESET);
         res = ler_int(&qtd);
         if (res == EOF){
-            printf("\nFim de arquivo atingido (EOF)\n");
+            printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
             pausar();
             return;
         }else if (res == 0){
@@ -83,7 +83,7 @@ void cadastrar_produto(Catalogo *control){
         printf(WHITE BOLD "\nDigite o volume que o produto ocupa (%d - %d): " RESET, PRODUTO_VOLUME_MIN, PRODUTO_VOLUME_MAX);
         res = ler_int(&volume);
         if (res == EOF){
-            printf("\nFim de arquivo atingido (EOF)\n");
+            printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
             pausar();
             return;
         }else if (res == 0){
@@ -153,7 +153,7 @@ void cadastrar_pedido(Fila *fila_pedidos, Catalogo *estoque){
             printf(WHITE "\nDigite o código do produto (0 para cancelar o pedido): " RESET);
             res = ler_int(&cod);
             if (res == EOF){
-                printf("\nFim de arquivo atingido (EOF)\n");
+                printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
                 pedido_liberar(pedido);
                 pausar();
                 return;
@@ -185,7 +185,7 @@ void cadastrar_pedido(Fila *fila_pedidos, Catalogo *estoque){
             printf(WHITE "\nDigite a quantidade do produto que deseja: " RESET);
             res = ler_int(&qtd);
             if (res == EOF){
-                printf("\nFim de arquivo atingido (EOF)\n");
+                printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
                 pedido_liberar(pedido);
                 pausar();
                 return;
@@ -219,7 +219,7 @@ void cadastrar_pedido(Fila *fila_pedidos, Catalogo *estoque){
             int op = -1;
             res = ler_int(&op);
             if (res == EOF){
-                printf("\nFim de arquivo atingido (EOF)\n");
+                printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
                 pedido_liberar(pedido);
                 pausar();
                 return;
@@ -290,6 +290,68 @@ void expedir_pacotes(Expedicao *exp, FilaPrioridade *pacotes){
     printf(RED "\n-> %d " RESET WHITE "caminhões deixaram as docas!" RESET RED " <-\n" RESET, expedicao_historico_tamanho(exp) - saidos_antes);
 }
 
+void remover_produto(Catalogo *estoque){
+    if (catalogo_vazio(estoque)){
+        printf(RED "\nO estoque está vazio!\n" RESET);
+        return;
+    }
+    imprimir_catalogo(estoque);
+    int cod;
+    while (1){
+        printf(GREEN "\nDigite o código do produto que deseja remover (0 para cancelar): " RESET);
+        int res = ler_int(&cod);
+        if (res == EOF){
+            printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
+            return;
+        }else if (res == 0){
+            printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
+            pausar();
+            continue;
+        }
+        if (cod == 0){
+            printf(RED "Cancelando..." RESET);
+            return;
+        }
+        break;
+    }
+    Produto *p = produto_search_code(cod, estoque);
+    if (p == NULL){
+        printf(RED BOLD "\nCódigo não encontrado\n" RESET);
+        return;
+    }
+    imprimir_produto(p);
+    while (1){
+        printf(WHITE BOLD "\nConfirmar remoção:\n" RESET);
+        printf(GREEN "(1) Remover produto\n" RESET);
+        printf(RED   "(2) Cancelar\n" RESET);
+        int opc;
+        int res = ler_int(&opc);
+        if (res == EOF){
+            printf(RED BOLD "\nFim de arquivo atingido (EOF)\n" RESET);
+            return;
+        }else if (res == 0){
+            printf(RED BOLD "\nErro: entrada inválida.\n" RESET);
+            pausar();
+            continue;
+        }
+        if (opc == 2){
+            return;
+        }
+        if (opc != 1){
+            printf(RED "\nÉ 1 ou 2!\n" RESET);
+            pausar();
+            continue;
+        }
+        break;
+    }
+    if (!catalogo_remover(estoque, cod)){
+        printf(RED BOLD "\nErro interno.\n" RESET);
+        return;
+    }
+    printf(GREEN BOLD "\nProduto removido com sucesso!\n" RESET);
+    printf(WHITE BOLD "OBS: Pedidos e pacotes já criados com esse produto continuam válidos.\n" RESET);
+}
+
 //secret
 
 static bool secret_importOfChina(Catalogo *estoque){
@@ -341,7 +403,45 @@ static int secret_ordersFlood(Fila *pedidos, Catalogo *estoque){
     return j;
 }
 
-void secret_function(Catalogo *estoque, Fila *pedidos){
+static int secret_gerarPacotes(FilaPrioridade *pacotes, Catalogo *estoque){
+    static int contador = 1;
+    int tamanho = sizeof(NOMES_PC) / sizeof(NOMES_PC[0]);
+    int criados = 0;
+    for (int i = 0; i < tamanho; i++){
+        Produto *produto = produto_search_name(NOMES_PC[i], estoque);
+        if (produto == NULL){
+            continue;
+        }
+        int prioridade = sortear(PRIORIDADE_QTD);
+        Pacote *pack = pacote_criar("MISTERIOSO", contador, "Um mistério", prioridade);
+        if (pack == NULL){
+            return criados;
+        }
+        if (pacote_adicionar_produto(pack, produto) != PACOTE_ADICIONADO){
+            pacote_liberar(pack);
+            return criados;
+        }
+        if (!fila_prioridade_enfileirar(pacotes, pack, prioridade)){
+            pacote_liberar(pack);
+            return criados;
+        }
+        contador++;
+        criados++;
+    }
+    return criados;
+}
+
+static void secret_packages(FilaPrioridade *pacotes, Catalogo *estoque){
+    printf(WHITE BOLD "\nVocê escolheu: " RESET RED "PACOTES MISTERIOSOS" RESET);
+    int criados = secret_gerarPacotes(pacotes, estoque);
+    if (criados == 0){
+        printf(RED BOLD "\nNenhum produto experimental no estoque! Importe-os antes (opção 1).\n" RESET);
+        return;
+    }
+    printf(GREEN "\nForam injetados %d pacotes misteriosos! (Ver menu 6).\n" RESET, criados);
+}
+
+void secret_function(Catalogo *estoque, Fila *pedidos, FilaPrioridade *pacotes){
     limpar_tela();
     printf(RED BOLD "\n░░░░░░░░░░░░░░░░░░░░░░░░░░\n" RESET);
 
@@ -352,12 +452,13 @@ void secret_function(Catalogo *estoque, Fila *pedidos){
     while (1){
         printf(WHITE "\n( 1 ) Importar produtos da china." RESET);
         printf(WHITE "\n( 2 ) Enxurrada de pedidos experimentais." RESET);
+        printf(WHITE "\n( 3 ) 2 pila ou pacotes misteriosos?" RESET);
         printf(RED ULINED "\n( 0 ) Abster-se dos privilégios" RESET);
         printf(GREEN "\n\n-> Escolha uma opção: " RESET);
         int op = -1;
         int res = ler_int(&op);
         if (res == EOF){
-            printf("\nFim dos privilégios atingido (EOF)\n");
+            printf(RED BOLD "\nFim dos privilégios atingido (EOF)\n" RESET);
             return;
         }else if (res == 0){
             printf(RED BOLD "\nOusas falsificar sua escolha?.\n" RESET);
@@ -374,6 +475,9 @@ void secret_function(Catalogo *estoque, Fila *pedidos){
                 return;
             case 2:
                 printf(GREEN "\nVocê recebeu uma enxurrada de %d pedidos! Rápido, verifique a fila de pedidos!\n" RESET, secret_ordersFlood(pedidos, estoque));
+                return;
+            case 3:
+                secret_packages(pacotes, estoque);
                 return;
             case 0:
                 printf(RED "\nVocê absteve-se dos privilégios da economia temporal!\n" RESET);
