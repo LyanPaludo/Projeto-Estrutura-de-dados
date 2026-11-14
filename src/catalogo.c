@@ -11,13 +11,14 @@ struct Produto{
     char *nome;
     int qtd;                //Quantidade deste produto no estoque
     int volume;             //Volume ocupado por um único produto
-    struct Produto *esq;   //Esquerda do produto na BST
-    struct Produto *dir;   //Direita do produto na BST
+    struct Produto *esq;   //Esquerda do produto na arvore
+    struct Produto *dir;   //Direita do produto na arvore
+    int altura; // AVL
 };
 
 struct Catalogo{
-    Produto *removidos; //Produtos removidos da BST
-    Produto *raiz;      //Raíz da BST
+    Produto *removidos; //Produtos removidos da arvore
+    Produto *raiz;      //Raíz da arvore
 };
 
 //GERAR PRÓXIMO CÓDIGO
@@ -25,55 +26,79 @@ static uint64_t produto_gerar_cod(void) {
     static uint64_t contador_cod = 1;
     return contador_cod++;
 }
-//INSERT
+
+//FUNÇÕES AVL
+static int altura(Produto *produto){
+    if (produto == NULL){
+        return 0;
+    }
+    return produto->altura;
+}
+static int fator_balanceamento(Produto *produto){
+    if (produto == NULL){
+        return 0;
+    }
+    return altura(produto->esq) - altura(produto->dir);
+}
+static int maior(int a, int b){
+    return a > b ? a : b;
+}
+static void atualizar_altura(Produto *produto){
+    produto->altura = 1 + maior(altura(produto->esq), altura(produto->dir));
+}
+static Produto *rotacao_direita(Produto *a){
+    Produto *b = a->esq;
+    a->esq = b->dir;
+    b->dir = a;
+    atualizar_altura(a);
+    atualizar_altura(b);
+    return b;
+}
+static Produto *rotacao_esquerda(Produto *a){
+    Produto *b = a->dir;
+    a->dir = b->esq;
+    b->esq = a;
+    atualizar_altura(a);
+    atualizar_altura(b);
+    return b;
+}
+static Produto *rebalancear(Produto *no){
+    if (no == NULL){
+        return NULL;
+    }
+    atualizar_altura(no);
+    int fb = fator_balanceamento(no);
+    if (fb > 1){
+        if (fator_balanceamento(no->esq) < 0){
+            no->esq = rotacao_esquerda(no->esq);
+        }
+        return rotacao_direita(no);
+    }else if (fb < -1){
+        if (fator_balanceamento(no->dir) > 0){
+            no->dir = rotacao_direita(no->dir);
+        }
+        return rotacao_esquerda(no);
+    }
+    return no;
+}
+static Produto *inserir_no(Produto *no, Produto *novo){
+    if (no == NULL){
+        return novo;
+    }
+    if (novo->codigo < no->codigo){
+        no->esq = inserir_no(no->esq, novo);
+    }else{
+        no->dir = inserir_no(no->dir, novo);
+    }
+    return rebalancear(no);
+}
 static void produto_inserir(Catalogo *control, Produto *produto){
     produto->esq = NULL;
     produto->dir = NULL;
-    if (control->raiz == NULL){
-        control->raiz = produto;
-        return;
-    }
-    Produto *atual = control->raiz;
-    while (1){
-        if (produto->codigo < atual->codigo){
-            if (atual->esq == NULL){
-                atual->esq = produto;
-                break;
-            }else{
-                atual = atual->esq;
-            }
-        }else{
-            if (atual->dir == NULL){
-                atual->dir = produto;
-                break;
-            }else{
-                atual = atual->dir;
-            }
-        }
-    }
+    produto->altura = 1;
+    control->raiz = inserir_no(control->raiz, produto);
 }
 
-Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, Catalogo *control){
-    if (nome == NULL || control == NULL || qtd <= 0 || volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
-        return NULL;
-    }
-    Produto *produto = (Produto *) malloc(sizeof(Produto));
-    if (produto == NULL){
-        return NULL;
-    }
-    char *name = (char *) malloc((strlen(nome)+1)*sizeof(char));
-    if (name == NULL){
-        free(produto);
-        return NULL;
-    }
-    strcpy(name, nome);
-    produto->nome   = name;
-    produto->qtd    = qtd;
-    produto->volume = volume;
-    produto->codigo = produto_gerar_cod();
-    produto_inserir(control, produto);
-    return produto;
-}
 
 //CREATE
 Catalogo *catalogo_criar(void){
@@ -186,6 +211,28 @@ bool produto_descontar_estoque(Produto *produto, int qtd){
     return true;
 }
 
+Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, Catalogo *control){
+    if (nome == NULL || control == NULL || qtd <= 0 || volume < PRODUTO_VOLUME_MIN || volume > PRODUTO_VOLUME_MAX){
+        return NULL;
+    }
+    Produto *produto = (Produto *) malloc(sizeof(Produto));
+    if (produto == NULL){
+        return NULL;
+    }
+    char *name = (char *) malloc((strlen(nome)+1)*sizeof(char));
+    if (name == NULL){
+        free(produto);
+        return NULL;
+    }
+    strcpy(name, nome);
+    produto->nome   = name;
+    produto->qtd    = qtd;
+    produto->volume = volume;
+    produto->codigo = produto_gerar_cod();
+    produto_inserir(control, produto);
+    return produto;
+}
+
 //DELETE
 static void produto_liberar(Produto *produto){
     free(produto->nome);
@@ -202,6 +249,9 @@ static void liberar_arvore(Produto *no){
 }
 
 void catalogo_liberar(Catalogo *control){
+    if (control == NULL){
+        return NULL;
+    }
     liberar_arvore(control->raiz);
     Produto *atual = control->removidos;
     while (atual != NULL){
@@ -218,7 +268,7 @@ static Produto *destacar_minimo(Produto *no, Produto **min){
         return no->dir; 
     }else{
         no->esq = destacar_minimo(no->esq, min);
-        return no;
+        return rebalancear(no);
     }
 }//encontra o mínimo, remove da subárvore e reaponta o pai.
 
@@ -238,7 +288,7 @@ static Produto *remover_no(Produto *no, uint64_t codigo, Produto **removido){
                 suc->esq = no->esq;
                 suc->dir = no->dir;
                 *removido = no;
-                return suc;
+                return rebalancear(suc);
             }else{
                 *removido = no;
                 return no->esq;
@@ -248,7 +298,7 @@ static Produto *remover_no(Produto *no, uint64_t codigo, Produto **removido){
             return no->dir;
         }
     }
-    return no;
+    return rebalancear(no);
 }
 bool catalogo_remover(Catalogo *control, uint64_t codigo){
     if (control == NULL){

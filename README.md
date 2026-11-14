@@ -1,6 +1,6 @@
 # Projeto de estrutura de dados
 
-Simulação em C do fluxo de um centro de distribuição (cadastro de produtos, fila de pedidos e montagem de pacotes) usando TADs de lista encadeada, fila e pilha.
+Simulação em C do fluxo de um centro de distribuição (cadastro de produtos, fila de pedidos e montagem de pacotes) usando TADs de lista encadeada, fila, pilha, árvore AVL e fila de prioridade.
 
 ## Sobre o projeto
 
@@ -13,6 +13,8 @@ Atualmente o sistema é capaz de cadastrar um produto e listar todos os produtos
 ## Estruturas de dados utilizadas
 
 **Árvore binária de busca (ABB):** armazena o catálogo de produtos, ordenada pelo código do produto. Substituiu a lista encadeada da Parte 1. Tem inserção, busca por código, busca por nome (percurso completo, pois a árvore não está ordenada por nome), listagem em ordem crescente de código (percurso em ordem), remoção e liberação (pós-ordem). Utilizada em catalogo.
+
+- **Substituída por (AVL)**: aplica rotações por fator de balanceamento a cada inserção de um novo produto, mantendo a árvore de busca com complexidade O(log n), ao contrário da ABB anterior que continha complexidade O(n).
 
 **Lista encadeada**: Armazenar os itens de cada pedido, perfeita para adicionar um novo item ao final. Utilizada em pedido. (Na Parte 1 também guardava os produtos.)
 
@@ -38,7 +40,7 @@ No momento:
 
 **interface.c/.h** -> Armazena as funções de interação com o usuário.
 
-**catalogo.c/.h** -> TAD que armazena as funções relacionadas aos produtos e ao catálogo.
+**catalogo.c/.h** -> TAD que armazena as funções relacionadas aos produtos e ao catálogo (AVL).
 
 **pedido.c/.h** -> TAD que armazena as funções relacionadas aos pedidos.
 
@@ -127,6 +129,8 @@ Já na Interface e no display: o verbo primeiro, o que recebe depois.
 
 Optei pelo uso de ponteiro genérico (void *) para não ter que escrever vários TADs de fila (pedidos, pacotes, caminhões) dessa forma um único arquivo consegue desreferenciar a fila em pedido ou em pacote.
 
+Escolhi a AVL para o catálogo porque os códigos dos produtos são sequenciais (1, 2, 3...): numa ABB simples cada produto novo iria sempre para a direita e a árvore viraria uma lista. A troca ficou restrita ao catalogo.c, o catalogo.h não mudou e o resto do sistema continua usando apenas as funções do TAD. As funções da AVL (altura, fator de balanceamento, rotações, rebalancear) são static e ficam escondidas dentro do TAD. Eu poderia ter escolhido a rubo negro (ARN) mas achei muito complexo de implementar no meu sistema.
+
 Ponteiro pendurado: o produto removido sai da árvore, mas não recebe free. Ele vai para uma lista interna de removidos do catálogo (reaproveitando o ponteiro esq) e só é liberado em catalogo_liberar, no encerramento. Assim pedidos e pacotes já criados continuam apontando para um produto válido. Foi preferido a bloquear a remoção ou usar contador de referências, porque os pacotes despachados ficam no histórico até o fim do programa.
 
 Optei pelo uso de prioridade por pedido, e não por pacote.
@@ -187,4 +191,4 @@ Os caminhões despachados ficam no histórico (e na memória) até o encerrament
 - [x] **Implementar a expedição com 5 docas em vetor e as regras de saída dos caminhões**
 - [x] **Integrar ao menu: expedir, ver docas, ver histórico e remover produto**
 
-- [ ] **Revisão final, teste do fluxo completo e conferência de vazamentos**
+- [x] **Revisão final, teste do fluxo completo e conferência de vazamentos**

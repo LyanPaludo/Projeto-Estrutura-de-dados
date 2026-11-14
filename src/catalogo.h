@@ -7,9 +7,6 @@ typedef struct Produto Produto;
 
 typedef struct Catalogo Catalogo;
 
-//INSERT
-Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, Catalogo *control); //Função para cadastrar produto em um catálogo
-
 //CREATE
 Catalogo *catalogo_criar(void);//Funcao para criar o catalogo
 
@@ -28,6 +25,8 @@ int produto_get_volume(Produto *produto);    //Volume do produto
 //UPDATE
 bool produto_aumentar_estoque(Produto *produto, int qtd);//Aumentar estoque
 bool produto_descontar_estoque(Produto *produto, int qtd);//Descontar do estoque
+Produto *produto_cadastrar_estoque(const char *nome, int qtd, int volume, Catalogo *control); //Função para cadastrar produto em um catálogo
+
 
 //DELETE
 void catalogo_liberar(Catalogo *control);
