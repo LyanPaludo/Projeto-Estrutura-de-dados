@@ -15,17 +15,17 @@ void imprimir_produto(Produto *produto){
     printf(RESET GREEN BOLD "Qtd. em estoque: " RESET WHITE "%d\n", produto_get_qtd(produto));
     printf(RESET GREEN BOLD "Vol. unitário: " RESET WHITE "%d\n",   produto_get_volume(produto));
     printf(RESET WHITE BOLD "-----------------------------\n"RESET);
-}//imprimir um produto
+}
 
 void imprimir_catalogo(Catalogo *estoque){
     if (catalogo_vazio(estoque)){
         printf(RED BOLD "\nLISTA VAZIA!\n" RESET);
         return;
     }
-    printf(RESET RED BOLD ULINED   "Super imprimidor de produto:\n");
+    printf(RESET RED BOLD ULINED   "\nSuper imprimidor de produto:\n");
     catalogo_percorrer(estoque, imprimir_produto);
-    printf(RESET RED BOLD ULINED  "End\n"RESET);
-}//imprimir toda uma lista de produtos
+    printf(RESET RED BOLD ULINED  "\nEnd\n"RESET);
+}
 
 void imprimir_pedido(Pedido *pedido){
     if (pedido == NULL){
@@ -148,7 +148,7 @@ void imprimir_historico(Expedicao *exp){
         printf(RED "\nNenhum caminhão saiu!\n" RESET);
         return;
     }
-    printf(RED ULINED "--Super imprimidor de histórico--" RESET);
+    printf(RED ULINED "\n--Super imprimidor de histórico--\n" RESET);
     expedicao_percorrer_historico(exp, visitar_caminhao);
     printf(RED ULINED "\n--Fim do Imprimidor de Históricos--\n" RESET);
 }

@@ -9,6 +9,6 @@ void pausar(void);      // Pausar até apertar enter
 bool apenas_espacos(const char *str); // verifica se só tem espaço em uma string
 bool ler_string(char *dest, int tamanho);//Função para ler string limitada e limpar excedentes;
 int ler_int(int *var);//Função auxiliar para ler inteiro (1: leu, 0: entrada inválida, EOF: fim de arquivo)
-void iniciar_sorteio(void);// Função para inciar a seed pseudoaleatória
+void iniciar_sorteio(void);// Função para iniciar a seed pseudoaleatória
 int sortear(int n);// Função para sortear um número inteiro pseudoaleatório de 0 até n-1.
 #endif  

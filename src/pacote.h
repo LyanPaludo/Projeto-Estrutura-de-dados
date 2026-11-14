@@ -22,6 +22,7 @@ const char *pacote_get_destino(Pacote *pacote); //Retorna destino do pacote
 int pacote_get_volume(Pacote *pacote); //Retorna o volume total dos itens dentro do pacote
 int pacote_get_qtd(Pacote *pacote); //Retorna a quantidade de itens no pacote
 int pacote_get_prioridade(Pacote *pacote); //Retorna a prioridade do pacote
+
 //UPDATE
 ResultadoPacote pacote_adicionar_produto(Pacote *pacote, Produto *produto); //Tenta empilhar um produto no pacote, retorna um ENUM ResultadoPacote
 

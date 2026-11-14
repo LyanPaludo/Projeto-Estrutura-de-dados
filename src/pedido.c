@@ -11,7 +11,7 @@
 typedef enum{
     AGUARDANDO,
     SEPARADO
-}STATUS;
+}StatusPedido;
 
 struct PedidoItem{
     Produto *produto;
@@ -22,7 +22,7 @@ struct PedidoItem{
 struct Pedido{
     char *codigo;
     char destino[DESTINO_TAM];
-    STATUS stat;
+    StatusPedido stat;
     PedidoItem *primeiro;
     PedidoItem *ultimo;
 };
